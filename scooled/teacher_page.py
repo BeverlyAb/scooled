@@ -4,7 +4,6 @@ import streamlit as st
 import pandas as pd
 import random 
 import itertools
-import re
 
 class Teacher:
     
@@ -15,18 +14,33 @@ class Teacher:
         # self.df = df
 
     def display(self, courses, assignment_table)->None:
-        st.title("s'cooled")
+        st.title("s'CoolEd")
         st.sidebar.title(f'Welcome, {self.name}')
         course = st.sidebar.selectbox(label='Courses',options=courses)
-        self.assignments(course,assignment_table)
+        return course
 
     def assignments(self,course,assignment_table)->None:
         course_display = assignment_table.filter([course,course+'_description'], axis=1)
         assignments = assignment_table[course]
-        assignment = st.sidebar.selectbox(label='Assignment',options=assignments)
         st.write(course_display)
-        st.write(assignment_table[course+'_description'][int(assignment.split(sep='_')[1])])
 
+        assignment = st.selectbox(label='Assignment',options=assignments)
+        col0, col1 = st.columns(2)
+
+        with col0:
+            description = course+'_description'+ assignment.split(sep='_')[1]
+            # assignment_table[course+'_description'][int(assignment.split(sep='_')[1])]
+            st.button(label='Edit '+ assignment,key='edit',on_click=self.edit_assign(course_display[course+'_description'][int(assignment.split(sep='_')[1])]))
+        with col1:
+            # for i in range(6): #fix alignment
+                # st.write(' ')
+            st.button(label='Add new assignment',key='new_assign',on_click=self.new_assign())
+
+    def edit_assign(self,assignment):
+        pass
+
+    def new_assign(self):
+        pass
 #outside of class
 def gen_dummy():
     courses = ['Math','Biology','English','Art']
@@ -38,6 +52,7 @@ def gen_dummy():
     for i in range(len(courses)):
         assign_name_series = pd.Series([table for table in assignments[i*10:(i+1)*10]],name=courses[i])
         assign_desc_series = pd.Series(['Description for '+table for table in assign_name_series],name=courses[i]+"_description")
+        a_series = pd.Series(['Description for '+table for table in assign_name_series],name=courses[i]+"_description")
         assignment_table = assignment_table.append([assign_name_series,assign_desc_series])
     assignment_table = assignment_table.transpose()
     return courses, students, grades, assignment_table
@@ -46,5 +61,5 @@ if __name__ == '__main__':
     # Dummy data for now. Need to create Entity Relationship Diagram later
     courses, students, grades, assignment_table = gen_dummy()
     teacher  = Teacher('Bev')
-    teacher.display(courses,assignment_table)
-
+    course = teacher.display(courses,assignment_table)
+    teacher.assignments(course,assignment_table)
