@@ -41,25 +41,24 @@ class Teacher:
 
     def new_assign(self):
         pass
-#outside of class
-def gen_dummy():
-    courses = ['Math','Biology','English','Art']
-    students = [str(name) for name in range(100)]
-    grades = [grade for grade in map(lambda x: random.randrange(0,101),range(len(students)*len(courses)))]
-    assignments = [assignment[0]+'_'+str(assignment[1]) for assignment in itertools.product(courses,range(10))]
-    
-    assignment_table = pd.DataFrame()
-    for i in range(len(courses)):
-        assign_name_series = pd.Series([table for table in assignments[i*10:(i+1)*10]],name=courses[i])
-        assign_desc_series = pd.Series(['Description for '+table for table in assign_name_series],name=courses[i]+"_description")
-        a_series = pd.Series(['Description for '+table for table in assign_name_series],name=courses[i]+"_description")
-        assignment_table = assignment_table.append([assign_name_series,assign_desc_series])
-    assignment_table = assignment_table.transpose()
-    return courses, students, grades, assignment_table
+
+    def gen_dummy(self):
+        courses = ['Math','Biology','English','Art']
+        students = [str(name) for name in range(100)]
+        grades = [grade for grade in map(lambda x: random.randrange(0,101),range(len(students)*len(courses)))]
+        assignments = [assignment[0]+'_'+str(assignment[1]) for assignment in itertools.product(courses,range(10))]
+        
+        assignment_table = pd.DataFrame()
+        for i in range(len(courses)):
+            assign_name_series = pd.Series([table for table in assignments[i*10:(i+1)*10]],name=courses[i])
+            assign_desc_series = pd.Series(['Description for '+table for table in assign_name_series],name=courses[i]+"_description")
+            assignment_table = assignment_table.append([assign_name_series,assign_desc_series])
+        assignment_table = assignment_table.transpose()
+        return courses, students, grades, assignment_table
 
 if __name__ == '__main__':
     # Dummy data for now. Need to create Entity Relationship Diagram later
-    courses, students, grades, assignment_table = gen_dummy()
     teacher  = Teacher('Bev')
+    courses, students, grades, assignment_table = teacher.gen_dummy()
     course = teacher.display(courses,assignment_table)
     teacher.assignments(course,assignment_table)
