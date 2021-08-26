@@ -34,10 +34,11 @@ class Teacher:
         st.write(course_display)
 
         assignment = st.selectbox(label='Assignment',options=assignments)
-        st.session_state[pt.assign] = assignment
+        st.session_state[pt.assign] = course_display[course+'_description'][int(assignment.split(sep='_')[1])]
+
         col0, col1 = st.columns(2)
         with col0:
-            description = course+'_description'+ assignment.split(sep='_')[1]
+            # description = course+'_description'+ assignment.split(sep='_')[1]
             # assignment_table[course+'_description'][int(assignment.split(sep='_')[1])]
             if st.button(label='Edit '+ assignment,key='edit'):
                 self.edit_assign()#course_display[course+'_description'][int(assignment.split(sep='_')[1])])
@@ -45,8 +46,7 @@ class Teacher:
         with col1:
             if st.button(label='Add new assignment',key='new'):
                 self.new_assign()
-        return assignment
-
+        
     def edit_assign(self):#,assignment):
         st.session_state[pt.new_pg] = False
         st.session_state[pt.teacher] = False

@@ -9,4 +9,4 @@ class Assignments:
         self.assignment = st.session_state[pt.assign]
 
     def display(self):
-        st.write(self.assignment)
+        st.title(self.assignment)

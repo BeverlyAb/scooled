@@ -7,11 +7,11 @@ from assignments_page import Assignments
 
 
 if __name__ == "__main__":
-    if pt.teacher not in st.session_state or pt.edit_pg not in st.session_state or pt.new_pg not in st.session_state:
+    if pt.teacher not in st.session_state or pt.edit_pg not in st.session_state or pt.new_pg not in st.session_state or pt.assign not in st.session_state:
         st.session_state[pt.teacher] = True
         st.session_state[pt.edit_pg] = False
         st.session_state[pt.new_pg] = False
-    assignment = None
+        assignment = None
     if st.session_state[pt.teacher]:
     # Dummy data for now. Need to create Entity Relationship Diagram later
         teacher  = Teacher('Bev',pt.edit_pg,pt.new_pg,pt.teacher,pt.assign)
@@ -22,8 +22,8 @@ if __name__ == "__main__":
     elif st.session_state[pt.edit_pg]:
         cur_assign = Assignments()
         cur_assign.display()
-        st.write(pt.edit_pg)
-        st.write(st.session_state[pt.edit_pg],st.session_state[pt.new_pg],st.session_state[pt.teacher])
+        # st.write(pt.edit_pg)
+        # st.write(st.session_state[pt.edit_pg],st.session_state[pt.new_pg],st.session_state[pt.teacher])
     elif st.session_state[pt.new_pg]:
         st.write(pt.new_pg)
         st.write(st.session_state[pt.edit_pg],st.session_state[pt.new_pg],st.session_state[pt.teacher])
