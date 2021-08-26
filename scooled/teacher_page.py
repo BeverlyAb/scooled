@@ -33,8 +33,11 @@ class Teacher:
         assignments = assignment_table[course]
         st.write(course_display)
 
+        # keep track of the assignment description in case user want to edit
         assignment = st.selectbox(label='Assignment',options=assignments)
-        st.session_state[pt.assign] = course_display[course+'_description'][int(assignment.split(sep='_')[1])]
+
+        desc = pd.Series(course_display[course+'_description'][int(assignment.split(sep='_')[1])],name=assignment)
+        st.session_state[pt.assign] = pd.DataFrame(desc)
 
         col0, col1 = st.columns(2)
         with col0:

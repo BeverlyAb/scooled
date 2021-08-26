@@ -4,6 +4,7 @@ import streamlit as st
 from structs import PageType as pt
 from teacher_page import Teacher
 from assignments_page import Assignments
+import pandas as pd
 
 
 if __name__ == "__main__":
