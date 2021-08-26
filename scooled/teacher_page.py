@@ -8,7 +8,7 @@ from structs import PageType as pt
 
 class Teacher:
     
-    def __init__(self, name : str, edit_pg : st.session_state, new_pg : st.session_state, teacher : st.session_state) -> None:
+    def __init__(self, name : str, edit_pg : st.session_state, new_pg : st.session_state, teacher : st.session_state, assign : st.session_state) -> None:
     #, df : pd.DataFrame) 
 
         self.name = name
@@ -19,8 +19,10 @@ class Teacher:
             st.session_state[new_pg] = False
         if teacher not in st.session_state:
             st.session_state[teacher] = True
+        if assign not in st.session_state:
+            st.session_state[assign] = None
 
-    def display(self, courses, assignment_table)->None:
+    def display(self, courses)->None:
         st.title("s'CoolEd")
         st.sidebar.title(f'Welcome, {self.name}')
         course = st.sidebar.selectbox(label='Courses',options=courses)
@@ -32,19 +34,20 @@ class Teacher:
         st.write(course_display)
 
         assignment = st.selectbox(label='Assignment',options=assignments)
+        st.session_state[pt.assign] = assignment
         col0, col1 = st.columns(2)
-
         with col0:
             description = course+'_description'+ assignment.split(sep='_')[1]
             # assignment_table[course+'_description'][int(assignment.split(sep='_')[1])]
             if st.button(label='Edit '+ assignment,key='edit'):
-                self.edit_assign(course_display[course+'_description'][int(assignment.split(sep='_')[1])])
+                self.edit_assign()#course_display[course+'_description'][int(assignment.split(sep='_')[1])])
 
         with col1:
             if st.button(label='Add new assignment',key='new'):
                 self.new_assign()
-            
-    def edit_assign(self,assignment):
+        return assignment
+
+    def edit_assign(self):#,assignment):
         st.session_state[pt.new_pg] = False
         st.session_state[pt.teacher] = False
         st.session_state[pt.edit_pg] = True
@@ -69,9 +72,9 @@ class Teacher:
         assignment_table = assignment_table.transpose()
         return courses, students, grades, assignment_table
 
-if __name__ == '__main__':
-    # Dummy data for now. Need to create Entity Relationship Diagram later
-    teacher  = Teacher('Bev')
-    courses, students, grades, assignment_table = teacher.gen_dummy()
-    course = teacher.display(courses,assignment_table)
-    teacher.assignments(course,assignment_table)
+# if __name__ == '__main__':
+#     # Dummy data for now. Need to create Entity Relationship Diagram later
+#     teacher  = Teacher('Bev')
+#     courses, students, grades, assignment_table = teacher.gen_dummy()
+#     course = teacher.display(courses,assignment_table)
+#     teacher.assignments(course,assignment_table)
