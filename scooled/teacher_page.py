@@ -21,12 +21,8 @@ class Teacher:
     def assignments(self,course,assignment_table)->None:
         st.write(assignment_table[course])
 
-
-
-
-
-if __name__ == '__main__':
-    # Dummy data for now. Need to create Entity Relationship Diagram later
+#outside of class
+def gen_dummy():
     courses = ['Math','Biology','English','Art']
     students = [str(name) for name in range(100)]
     grades = [grade for grade in map(lambda x: random.randrange(0,101),range(len(students)*len(courses)))]
@@ -37,6 +33,12 @@ if __name__ == '__main__':
         assignment_table.append(pd.Series([table for table in assignments[i*10:(i+1)*10]],name=courses[i]))
     assignment_table = pd.DataFrame(assignment_table)
     assignment_table = assignment_table.transpose()
+
+    return courses, students, grades, assignment_table
+
+if __name__ == '__main__':
+    # Dummy data for now. Need to create Entity Relationship Diagram later
+    courses, students, grades, assignment_table = gen_dummy()
     teacher  = Teacher('Bev')
     teacher.display(courses,assignment_table)
 
