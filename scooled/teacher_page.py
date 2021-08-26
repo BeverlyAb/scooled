@@ -12,15 +12,14 @@ class Teacher:
         self.name = name
         # self.df = df
 
-    def display(self, courses, assignments)->None:
+    def display(self, courses, assignment_table)->None:
         st.title("s'cooled")
         st.sidebar.title(f'Welcome, {self.name}')
         course = st.sidebar.selectbox(label='Courses',options=courses)
-        st.stop()
-        self.assignments(course,assignments)
+        self.assignments(course,assignment_table)
 
-    def assignments(self,course,assignments)->None:
-        st.write
+    def assignments(self,course,assignment_table)->None:
+        st.write(assignment_table[course])
 
 
 
@@ -36,7 +35,8 @@ if __name__ == '__main__':
     assignment_table = []
     for i in range(len(courses)):
         assignment_table.append(pd.Series([table for table in assignments[i*10:(i+1)*10]],name=courses[i]))
-    st.write(pd.DataFrame(assignment_table))
+    assignment_table = pd.DataFrame(assignment_table)
+    assignment_table = assignment_table.transpose()
     teacher  = Teacher('Bev')
-    teacher.display(courses,assignments)
+    teacher.display(courses,assignment_table)
 
