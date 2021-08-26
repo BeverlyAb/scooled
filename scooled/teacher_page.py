@@ -4,6 +4,8 @@ import streamlit as st
 import pandas as pd
 import random 
 import itertools
+import re
+
 class Teacher:
     
     def __init__(self, name : str)-> None:
@@ -20,8 +22,10 @@ class Teacher:
 
     def assignments(self,course,assignment_table)->None:
         assignments = assignment_table[course]   
-        st.write(assignment_table, assignments)
-        st.sidebar.selectbox(label='Assignment',options=assignments)
+        st.write(assignments)
+        assignment = st.sidebar.selectbox(label='Assignment',options=assignments)
+    
+        st.write(assignment_table[course+'_description'][int(assignment.split(sep='_')[1])])
 
 #outside of class
 def gen_dummy():
@@ -29,20 +33,13 @@ def gen_dummy():
     students = [str(name) for name in range(100)]
     grades = [grade for grade in map(lambda x: random.randrange(0,101),range(len(students)*len(courses)))]
     assignments = [assignment[0]+'_'+str(assignment[1]) for assignment in itertools.product(courses,range(10))]
-     
-    # assignment_table = []
+    
+    assignment_table = pd.DataFrame()
     for i in range(len(courses)):
         assign_name_series = pd.Series([table for table in assignments[i*10:(i+1)*10]],name=courses[i])
         assign_desc_series = pd.Series(['Description for '+table for table in assign_name_series],name=courses[i]+"_description")
-        # assignment_table.append(pd.Series([table for table in assignments[i*10:(i+1)*10]],name=courses[i]))
-    st.write(assign_name_series,assign_desc_series)
-    # assignment_table = pd.DataFrame(assignment_table)
-    # assignment_table = assignment_table.transpose()
-
-    assignment_table = pd.DataFrame([assign_name_series,assign_desc_series]).transpose()
-    st.write(assignment_table)
-    st.stop()
-
+        assignment_table = assignment_table.append([assign_name_series,assign_desc_series])
+    assignment_table = assignment_table.transpose()
     return courses, students, grades, assignment_table
 
 if __name__ == '__main__':
