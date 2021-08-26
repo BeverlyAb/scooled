@@ -4,14 +4,21 @@ import streamlit as st
 import pandas as pd
 import random 
 import itertools
+from structs import PageType as pt
 
 class Teacher:
     
-    def __init__(self, name : str)-> None:
+    def __init__(self, name : str, edit_pg : st.session_state, new_pg : st.session_state, teacher : st.session_state) -> None:
     #, df : pd.DataFrame) 
 
         self.name = name
         # self.df = df
+        if edit_pg not in st.session_state:
+            st.session_state[edit_pg] = False
+        if new_pg not in st.session_state:
+            st.session_state[new_pg] = False
+        if teacher not in st.session_state:
+                st.session_state[teacher] = False
 
     def display(self, courses, assignment_table)->None:
         st.title("s'CoolEd")
@@ -30,17 +37,20 @@ class Teacher:
         with col0:
             description = course+'_description'+ assignment.split(sep='_')[1]
             # assignment_table[course+'_description'][int(assignment.split(sep='_')[1])]
-            st.button(label='Edit '+ assignment,key='edit',on_click=self.edit_assign(course_display[course+'_description'][int(assignment.split(sep='_')[1])]))
+            st.button(label='Edit '+ assignment,on_click=self.edit_assign(course_display[course+'_description'][int(assignment.split(sep='_')[1])]))
         with col1:
             # for i in range(6): #fix alignment
                 # st.write(' ')
-            st.button(label='Add new assignment',key='new_assign',on_click=self.new_assign())
+            st.button(label='Add new assignment',on_click=self.new_assign())
 
     def edit_assign(self,assignment):
-        pass
-
+        st.session_state[pt.new_pg] = False
+        st.session_state[pt.teacher] = False
+        st.session_state[pt.edit_pg] = True
     def new_assign(self):
-        pass
+        st.session_state[pt.edit_pg] = False
+        st.session_state[pt.teacher] = False
+        st.session_state[pt.new_pg] = True
 
     def gen_dummy(self):
         courses = ['Math','Biology','English','Art']
