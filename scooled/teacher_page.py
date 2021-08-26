@@ -29,12 +29,9 @@ if __name__ == '__main__':
     courses = ['Math','Biology','English','Art']
     students = [str(name) for name in range(100)]
     grades = [grade for grade in map(lambda x: random.randrange(0,101),range(len(students)*len(courses)))]
-    
-    assign_names = lambda course_name, i: course_name[0] + str(i)
-
     assignments = [assignment[0]+'_'+str(assignment[1]) for assignment in itertools.product(courses,range(10))]
-    st.write(assignments)
-    
+    assignment_table = [table for table in itertools.product([courses[0]],assignments[0:10])]
+    st.write(assignment_table)
     teacher  = Teacher('Bev')
     teacher.display(courses)
 
