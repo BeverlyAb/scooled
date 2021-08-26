@@ -21,10 +21,10 @@ class Teacher:
         self.assignments(course,assignment_table)
 
     def assignments(self,course,assignment_table)->None:
-        assignments = assignment_table[course]   
-        st.write(assignments)
+        course_display = assignment_table.filter([course,course+'_description'], axis=1)
+        assignments = assignment_table[course]
         assignment = st.sidebar.selectbox(label='Assignment',options=assignments)
-    
+        st.write(course_display)
         st.write(assignment_table[course+'_description'][int(assignment.split(sep='_')[1])])
 
 #outside of class
