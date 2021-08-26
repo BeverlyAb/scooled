@@ -20,5 +20,7 @@ if __name__ == "__main__":
         teacher.assignments(course,assignment_table)
     elif st.session_state[pt.edit_pg]:
         st.write(pt.edit_pg)
+        st.write(st.session_state[pt.edit_pg],st.session_state[pt.new_pg],st.session_state[pt.teacher])
     elif st.session_state[pt.new_pg]:
         st.write(pt.new_pg)
+        st.write(st.session_state[pt.edit_pg],st.session_state[pt.new_pg],st.session_state[pt.teacher])

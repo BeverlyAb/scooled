@@ -18,7 +18,7 @@ class Teacher:
         if new_pg not in st.session_state:
             st.session_state[new_pg] = False
         if teacher not in st.session_state:
-                st.session_state[teacher] = False
+            st.session_state[teacher] = True
 
     def display(self, courses, assignment_table)->None:
         st.title("s'CoolEd")
@@ -37,20 +37,23 @@ class Teacher:
         with col0:
             description = course+'_description'+ assignment.split(sep='_')[1]
             # assignment_table[course+'_description'][int(assignment.split(sep='_')[1])]
-            st.button(label='Edit '+ assignment,on_click=self.edit_assign(course_display[course+'_description'][int(assignment.split(sep='_')[1])]))
-        with col1:
-            # for i in range(6): #fix alignment
-                # st.write(' ')
-            st.button(label='Add new assignment',on_click=self.new_assign())
+            if st.button(label='Edit '+ assignment,key='edit'):
+                self.edit_assign(course_display[course+'_description'][int(assignment.split(sep='_')[1])])
 
+        with col1:
+            if st.button(label='Add new assignment',key='new'):
+                self.new_assign()
+            
     def edit_assign(self,assignment):
         st.session_state[pt.new_pg] = False
         st.session_state[pt.teacher] = False
         st.session_state[pt.edit_pg] = True
+        st.write('Edit')
     def new_assign(self):
         st.session_state[pt.edit_pg] = False
         st.session_state[pt.teacher] = False
         st.session_state[pt.new_pg] = True
+        st.write('triggered')
 
     def gen_dummy(self):
         courses = ['Math','Biology','English','Art']
