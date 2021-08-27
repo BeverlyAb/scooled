@@ -25,15 +25,16 @@ class Assignments:
         set_ques_len = 4
         set_ans_len = 3
         for i in range(set_ques_len):
-            st.text_input(label="Question "+str(i+1))
-            col0,col1,col2 = st.columns(set_ans_len)
-            col_arr = [col0, col1,col2]
-            for ind,col in enumerate(col_arr):
-                with col:
-                    st.text_input(label='Option '+str(i+1),key = str(i)+str(ind))
+            with st.form(exam_name+'Form'+str(i)):
+                st.text_input(label="Question "+str(i+1))
+                col0,col1,col2 = st.columns(set_ans_len)
+                col_arr = [col0, col1,col2]
+                for ind,col in enumerate(col_arr):
+                        with col:
+                            st.text_input(label='Option '+str(i+1),key = str(i)+str(ind))
 
-            st.selectbox(label='Correct option:',options=range(1,set_ans_len+1),key=exam_name+'ans'+str(i))
-
+                st.selectbox(label='Correct option:',options=range(1,set_ans_len+1),key=exam_name+'ans'+str(i))
+                st.form_submit_button('Done')
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
 
