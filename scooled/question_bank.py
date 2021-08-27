@@ -11,4 +11,3 @@ class QuestionBank:
     
     def add(self, name:str, assign : dict):
         self.bank[name] = assign
-        st.write(self.bank)

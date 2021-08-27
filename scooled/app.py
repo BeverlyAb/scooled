@@ -24,7 +24,7 @@ if __name__ == "__main__":
         courses, students, grades, assignment_table = teacher.gen_dummy()
         course = teacher.display(courses)
         assignment = teacher.assignments(course,assignment_table)
-        st.write(qbank.get_bank(),st.session_state[pt.submit])
+        st.write(len(qbank.get_bank()))
 
     # Edit Page
     elif st.session_state[pt.edit_pg]:
@@ -34,11 +34,11 @@ if __name__ == "__main__":
     # New Page
     elif st.session_state[pt.new_pg]:
         new_assign = Assignments()
-
         new_assign.create_new_pg()
-        st.write(st.session_state[pt.submit])
+
         if st.session_state[pt.submit] != False:
             exam_name = st.session_state[pt.submit][0]
             assign = st.session_state[pt.submit][1]
             qbank.add(exam_name,assign)
-            st.write('heero')
+        st.write(len(qbank.get_bank()))
+            

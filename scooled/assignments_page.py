@@ -26,7 +26,6 @@ class Assignments:
         set_ans_len = 3
         
         ques_bank = self.get_bank_from_forms(exam_name,set_ques_len,set_ans_len)
-        st.write(ques_bank)
 
         if st.button('Submit'):
             st.session_state[pt.submit] = exam_name, ques_bank  # update submit
