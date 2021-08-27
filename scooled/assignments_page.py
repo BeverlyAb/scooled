@@ -10,6 +10,7 @@ class Assignments:
         self.assignment = st.session_state[pt.assign]
 
     def display(self):
+        st.sidebar.title('Menu')
         st.title(self.assignment)
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)

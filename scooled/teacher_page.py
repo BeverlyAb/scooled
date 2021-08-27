@@ -23,8 +23,8 @@ class Teacher:
             st.session_state[assign] = None
 
     def display(self, courses)->None:
-        st.title("s'CoolEd")
-        st.sidebar.title(f'Welcome, {self.name}')
+        st.title(f"{self.name}'s Courses")
+        st.sidebar.title('Menu')
         course = st.sidebar.selectbox(label='Courses',options=courses)
         return course
 
