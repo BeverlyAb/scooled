@@ -28,7 +28,8 @@ class Assignments:
         ques_bank = {} # { exam_question : { answer : options } }
         for i in range(set_ques_len):
             with st.form(exam_name+'Form'+str(i)):
-                question = st.text_input(label="Question "+str(i+1))
+                question = exam_name+'_'+str(i)+','
+                question += st.text_input(label="Question "+str(i+1))
                 options = []
                 col0,col1,col2 = st.columns(set_ans_len)
                 col_arr = [col0, col1,col2]
@@ -38,8 +39,10 @@ class Assignments:
 
                 ans = st.selectbox(label='Correct option:',options=range(1,set_ans_len+1),key=exam_name+'ans'+str(i))
                 st.form_submit_button('Done')
-            st.write(question,options,ans)
+            ques_bank[question] = {ans : options}
+            st.write(ques_bank)
             options = []
+        
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
 
