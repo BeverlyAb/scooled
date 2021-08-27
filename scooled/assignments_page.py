@@ -29,9 +29,9 @@ class Assignments:
         st.write(ques_bank)
 
         if st.button('Submit'):
-            st.session_state[pt.submit] = exam_name, ques_bank
-            self.reset_forms()
-            self.reset_pg(pt.teacher)
+            st.session_state[pt.submit] = exam_name, ques_bank  # update submit
+            self.reset_forms()                                  # clear forms
+            self.reset_pg(pt.teacher)                           # go back to teacher pg
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
 

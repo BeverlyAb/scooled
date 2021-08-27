@@ -10,6 +10,5 @@ class QuestionBank:
         return self.bank 
     
     def add(self, name:str, assign : dict):
-        if assign != None:
-            self.bank[name] = assign
-            st.write(self.bank)
+        self.bank[name] = assign
+        st.write(self.bank)
