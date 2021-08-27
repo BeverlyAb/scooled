@@ -24,17 +24,22 @@ class Assignments:
         st.title(exam_name)
         set_ques_len = 4
         set_ans_len = 3
+
+        ques_bank = {} # { exam_question : { answer : options } }
         for i in range(set_ques_len):
             with st.form(exam_name+'Form'+str(i)):
-                st.text_input(label="Question "+str(i+1))
+                question = st.text_input(label="Question "+str(i+1))
+                options = []
                 col0,col1,col2 = st.columns(set_ans_len)
                 col_arr = [col0, col1,col2]
                 for ind,col in enumerate(col_arr):
                         with col:
-                            st.text_input(label='Option '+str(i+1),key = str(i)+str(ind))
+                            options.append(st.text_input(label='Option '+str(ind+1),key = str(i)+str(ind)))
 
-                st.selectbox(label='Correct option:',options=range(1,set_ans_len+1),key=exam_name+'ans'+str(i))
+                ans = st.selectbox(label='Correct option:',options=range(1,set_ans_len+1),key=exam_name+'ans'+str(i))
                 st.form_submit_button('Done')
+            st.write(question,options,ans)
+            options = []
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
 
