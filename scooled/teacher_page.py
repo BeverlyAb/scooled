@@ -8,7 +8,7 @@ from structs import PageType as pt
 
 class Teacher:
     
-    def __init__(self, name : str, edit_pg : st.session_state, new_pg : st.session_state, teacher : st.session_state, assign : st.session_state) -> None:
+    def __init__(self, name : str, edit_pg : st.session_state, new_pg : st.session_state, teacher : st.session_state, assign : st.session_state, submit : st.session_state) -> None:
     #, df : pd.DataFrame) 
 
         self.name = name
@@ -21,6 +21,8 @@ class Teacher:
             st.session_state[teacher] = True
         if assign not in st.session_state:
             st.session_state[assign] = None
+        if submit not in st.session_state:    
+            st.session_state[pt.submit] = False
 
     def display(self, courses)->None:
         st.title(f"{self.name}'s Courses")
@@ -50,7 +52,6 @@ class Teacher:
                 # create a new assignment name
                 next_num = len(course_display)
                 assignment = assignment.replace(assignment.split(sep='_')[1],"")+str(next_num)
-                st.write(assignment)
                 desc = pd.Series([0],name=assignment)
                 st.session_state[pt.assign] = pd.DataFrame(desc)
                 self.new_assign()
@@ -59,12 +60,14 @@ class Teacher:
         st.session_state[pt.new_pg] = False
         st.session_state[pt.teacher] = False
         st.session_state[pt.edit_pg] = True
-        st.write('Edit')
+        st.session_state[pt.submit] = False
+
     def new_assign(self):
         st.session_state[pt.edit_pg] = False
         st.session_state[pt.teacher] = False
+        st.session_state[pt.submit] = False
         st.session_state[pt.new_pg] = True
-        st.write('triggered')
+
 
     def gen_dummy(self):
         courses = ['Math','Biology','English','Art']
