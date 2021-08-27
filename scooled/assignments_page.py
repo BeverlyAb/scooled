@@ -38,11 +38,13 @@ class Assignments:
                             options.append(st.text_input(label='Option '+str(ind+1),key = str(i)+str(ind)))
 
                 ans = st.selectbox(label='Correct option:',options=range(1,set_ans_len+1),key=exam_name+'ans'+str(i))
-                st.form_submit_button('Done')
+                st.form_submit_button('OK')
             ques_bank[question] = {ans : options}
             st.write(ques_bank)
             options = []
         
+        if st.button('Submit'):
+            return ques_bank
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
 

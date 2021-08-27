@@ -5,9 +5,12 @@ from structs import PageType as pt
 from teacher_page import Teacher
 from assignments_page import Assignments
 import pandas as pd
+from question_bank import QuestionBank
 
 
 if __name__ == "__main__":
+    
+
     if pt.teacher not in st.session_state or pt.edit_pg not in st.session_state or pt.new_pg not in st.session_state or pt.assign not in st.session_state:
         st.session_state[pt.teacher] = True
         st.session_state[pt.edit_pg] = False
