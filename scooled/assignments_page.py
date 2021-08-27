@@ -24,12 +24,23 @@ class Assignments:
         st.title(exam_name)
         set_ques_len = 4
         set_ans_len = 3
+        
+        ques_bank = self.get_bank_from_forms(exam_name,set_ques_len,set_ans_len)
+        st.write(ques_bank)
 
-        ques_bank = {} # { exam_question : { answer : options } }
+        if st.button('Submit'):
+            st.session_state[pt.submit] = exam_name, ques_bank
+            self.reset_forms()
+            self.reset_pg(pt.teacher)
+        if st.sidebar.button('Return to Courses'):
+            self.reset_pg(pt.teacher)
+
+    def get_bank_from_forms(self,exam_name,set_ques_len,set_ans_len):
+        ques_bank = {} # { exam_question : { answer index : options } }
         for i in range(set_ques_len):
-            with st.form(exam_name+'Form'+str(i)):
+            with st.form(exam_name+'_Form_'+str(i)):
                 question = exam_name+'_'+str(i)+','
-                question += st.text_input(label="Question "+str(i+1))
+                question += st.text_input(label="Question "+str(i+1),)
                 options = []
                 col0,col1,col2 = st.columns(set_ans_len)
                 col_arr = [col0, col1,col2]
@@ -39,15 +50,14 @@ class Assignments:
 
                 ans = st.selectbox(label='Correct option:',options=range(1,set_ans_len+1),key=exam_name+'ans'+str(i))
                 st.form_submit_button('OK')
-            ques_bank[question] = {ans : options}
-            st.write(ques_bank)
+            ques_bank[question] = {int(ans)-1 : options}
             options = []
-        
-        if st.button('Submit'):
-            return ques_bank
-        if st.sidebar.button('Return to Courses'):
-            self.reset_pg(pt.teacher)
+        return ques_bank
 
+    def reset_forms(self):
+        non_form_states = [pt.teacher,pt.edit_pg,pt.new_pg,pt.submit,pt.assign]
+        for val in filter(lambda x: x not in non_form_states, st.session_state):
+            del st.session_state[val] 
 
     def reset_pg(self, go_to):
         is_bool = lambda x : type(st.session_state[x]) == bool   

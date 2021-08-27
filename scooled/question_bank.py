@@ -3,13 +3,13 @@
 import streamlit as st
 class QuestionBank:
 
-    def __init__(self, bank):
+    def __init__(self):
         self.bank = {}
 
     def get_bank(self):
         return self.bank 
     
-    def update_bank(self, assign : dict):
-        st.write(assign.keys()[0])
-        self.bank[assign.keys()[0]] = assign
-
+    def add(self, name:str, assign : dict):
+        if assign != None:
+            self.bank[name] = assign
+            st.write(self.bank)
