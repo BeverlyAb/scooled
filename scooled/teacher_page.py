@@ -5,10 +5,11 @@ import pandas as pd
 import random 
 import itertools
 from structs import PageType as pt
+from question_bank import QuestionBank
 
 class Teacher:
     
-    def __init__(self, name : str, edit_pg : st.session_state, new_pg : st.session_state, teacher : st.session_state, assign : st.session_state, submit : st.session_state) -> None:
+    def __init__(self, name : str, edit_pg : st.session_state, new_pg : st.session_state, teacher : st.session_state, assign : st.session_state, submit : st.session_state, bank : st.session_state) -> None:
     #, df : pd.DataFrame) 
 
         self.name = name
@@ -23,6 +24,8 @@ class Teacher:
             st.session_state[assign] = None
         if submit not in st.session_state:    
             st.session_state[pt.submit] = False
+        if bank not in st.session_state:
+            st.session_state[pt.bank] = QuestionBank()
 
     def display(self, courses)->None:
         st.title(f"{self.name}'s Courses")

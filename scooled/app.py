@@ -8,23 +8,24 @@ import pandas as pd
 from question_bank import QuestionBank
 
 if __name__ == "__main__":
-    qbank = QuestionBank()
 
     # init states
-    if pt.teacher not in st.session_state or pt.edit_pg not in st.session_state or pt.new_pg not in st.session_state or pt.assign not in st.session_state:
+    if pt.teacher not in st.session_state or pt.edit_pg not in st.session_state or pt.new_pg not in st.session_state or pt.assign not in st.session_state or pt.bank not in st.session_state:
         st.session_state[pt.teacher] = True
         st.session_state[pt.edit_pg] = False
         st.session_state[pt.new_pg] = False
         assignment = None
+        st.session_state[pt.bank] = QuestionBank()
+
 
     # Display Teacher Page
     if st.session_state[pt.teacher]:
     # Dummy data for now. Need to create Entity Relationship Diagram later
-        teacher  = Teacher('Bev',pt.edit_pg,pt.new_pg,pt.teacher,pt.assign,pt.submit)
+        teacher  = Teacher('Bev',pt.edit_pg,pt.new_pg,pt.teacher,pt.assign,pt.submit,pt.bank)
         courses, students, grades, assignment_table = teacher.gen_dummy()
         course = teacher.display(courses)
         assignment = teacher.assignments(course,assignment_table)
-        st.write(len(qbank.get_bank()),qbank)
+        # st.write(len(st.session_state[pt.bank].get_bank()),st.session_state[pt.bank])
 
     # Edit Page
     elif st.session_state[pt.edit_pg]:
@@ -39,6 +40,6 @@ if __name__ == "__main__":
         if st.session_state[pt.submit] != False:
             exam_name = st.session_state[pt.submit][0]
             assign = st.session_state[pt.submit][1]
-            qbank.add(exam_name,assign)
-        st.write(len(qbank.get_bank()),qbank)
+            # st.session_state[pt.bank].add(exam_name,assign)
+        # st.write(len(st.session_state[pt.bank].get_bank()),st.session_state[pt.bank])
             

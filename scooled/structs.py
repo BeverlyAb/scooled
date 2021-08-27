@@ -1,6 +1,7 @@
 # structs.py
 
 from dataclasses import dataclass
+from question_bank import QuestionBank
 
 @dataclass
 class PageType:
@@ -9,3 +10,4 @@ class PageType:
     new_pg : str = 'new_page'
     assign : str = 'assignment'
     submit : str = 'submit'
+    bank : str = 'question_bank'

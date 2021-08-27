@@ -10,6 +10,7 @@ class Assignments:
         self.assignment = st.session_state[pt.assign]
         # if st.session_state[pt.submit] not in st.session_state:
         #     st.session_state[pt.submit] = False
+        
 
     def display(self):
         st.sidebar.title('Menu')
