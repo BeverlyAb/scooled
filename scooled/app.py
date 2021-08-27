@@ -23,8 +23,6 @@ if __name__ == "__main__":
     elif st.session_state[pt.edit_pg]:
         cur_assign = Assignments()
         cur_assign.display()
-        # st.write(pt.edit_pg)
-        # st.write(st.session_state[pt.edit_pg],st.session_state[pt.new_pg],st.session_state[pt.teacher])
     elif st.session_state[pt.new_pg]:
-        st.write(pt.new_pg)
-        st.write(st.session_state[pt.edit_pg],st.session_state[pt.new_pg],st.session_state[pt.teacher])
+        new_assign = Assignments()
+        new_assign.display()

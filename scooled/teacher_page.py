@@ -36,18 +36,23 @@ class Teacher:
         # keep track of the assignment description in case user want to edit
         assignment = st.selectbox(label='Assignment',options=assignments)
 
-        desc = pd.Series(course_display[course+'_description'][int(assignment.split(sep='_')[1])],name=assignment)
-        st.session_state[pt.assign] = pd.DataFrame(desc)
-
         col0, col1 = st.columns(2)
         with col0:
             # description = course+'_description'+ assignment.split(sep='_')[1]
             # assignment_table[course+'_description'][int(assignment.split(sep='_')[1])]
             if st.button(label='Edit '+ assignment,key='edit'):
+                desc = pd.Series(course_display[course+'_description'][int(assignment.split(sep='_')[1])],name=assignment)
+                st.session_state[pt.assign] = pd.DataFrame(desc)
                 self.edit_assign()#course_display[course+'_description'][int(assignment.split(sep='_')[1])])
 
         with col1:
             if st.button(label='Add new assignment',key='new'):
+                # create a new assignment name
+                next_num = len(course_display)
+                assignment = assignment.replace(assignment.split(sep='_')[1],"")+str(next_num)
+                st.write(assignment)
+                desc = pd.Series([0],name=assignment)
+                st.session_state[pt.assign] = pd.DataFrame(desc)
                 self.new_assign()
         
     def edit_assign(self):#,assignment):
