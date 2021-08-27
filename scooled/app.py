@@ -23,6 +23,7 @@ if __name__ == "__main__":
     # Dummy data for now. Need to create Entity Relationship Diagram later
         teacher  = Teacher('Bev',pt.edit_pg,pt.new_pg,pt.teacher,pt.assign,pt.submit,pt.bank)
         courses, students, grades, assignment_table = teacher.gen_dummy()
+        
         course = teacher.display(courses)
         assignment = teacher.assignments(course,assignment_table)
         st.write(st.session_state[pt.bank].get_bank(),st.session_state[pt.bank])
@@ -41,7 +42,8 @@ if __name__ == "__main__":
             exam_name = st.session_state[pt.submit][0]
             assign = st.session_state[pt.submit][1]
             
-            if pt.bank not in st.session_state:
+            # Not sure why pt.bank wasn't saved under first call of app main() 
+            if pt.bank not in st.session_state:         
                st.session_state[pt.bank] = QuestionBank() 
             
             st.session_state[pt.bank].add(exam_name,assign)

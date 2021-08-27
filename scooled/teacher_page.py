@@ -28,9 +28,10 @@ class Teacher:
             st.session_state[pt.bank] = QuestionBank()
 
     def display(self, courses)->None:
-        st.title(f"{self.name}'s Courses")
-        st.sidebar.title('Menu')
+        st.title("s'CoolEd")
+        st.sidebar.title(f"{self.name}'s Courses")
         course = st.sidebar.selectbox(label='Courses',options=courses)
+        st.write(f'{course} Assignments')
         return course
 
     def assignments(self,course,assignment_table)->None:
