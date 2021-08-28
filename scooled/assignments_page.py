@@ -15,7 +15,7 @@ class Assignments:
         # if st.session_state[pt.submit] not in st.session_state:
         #     st.session_state[pt.submit] = False
         self.sql_con = SQLConnector()
-        self.table = 'assignments'
+        self.table = 'test.question_bank'
         self.set_ques_len = 4
         self.set_opt_len = 3
         
@@ -24,7 +24,8 @@ class Assignments:
         st.sidebar.title('Menu')
         assign = self.assignment.columns[0]
         st.title('Assignment Overview')
-
+        st.write(assign)
+        st.stop()
         notes, vals = self.split_notes_and_questions(assign)
         assign_name = vals[0]
         if vals != None:
@@ -46,7 +47,7 @@ class Assignments:
         # df=pd.DataFrame(d,index=[0]).transpose()
         # # df.index = np.arange(1, len(df)+1)
         # st.write(df)
-        self.sql_con.query(f"SHOW COLUMNS FROM test.{self.table}")
+        self.sql_con.query(f"SHOW COLUMNS FROM {self.table}")
         cols = st.session_state[pt.submit]
         column_name = [col[0] for col in cols]
         return column_name[:-1] #exclude rowindex
@@ -64,7 +65,7 @@ class Assignments:
                 corr_q = df['Question'][q]
                 q = 'q'+str(q)
                 if st.form_submit_button('OK'):
-                    query = f"UPDATE test.{self.table} SET Notes = '{note}' WHERE assign_name = '{assign_name}' AND {q} = '{corr_q}';"
+                    query = f"UPDATE {self.table} SET Notes = '{note}' WHERE assign_name = '{assign_name}' AND {q} = '{corr_q}';"
                     self.sql_con.query(query)
                     st.success(f"Updated notes for {q}")
 
@@ -120,22 +121,36 @@ class Assignments:
             self.reset_forms()                                  # clear forms
             self.reset_pg(pt.teacher)                           # go back to teacher pg
 
-    def write_to_db(self, ques_bank,exam_name):
-        to_cols = ["assign_name", "course_name","q1", "q1_op_1","q1_op_2", "q1_op_3",
-	            "q1_ans","q2","q2_op_1","q2_op_2","q2_op_3","q2_ans","q3","q3_op_1",
-                "q3_op_2","q3_op_3","q3_ans","q4","q4_op_1","q4_op_2","q4_op_3","q4_ans"]
+    def write_to_db(self, ques_bank : dict,exam_name):
+        to_cols = ["assign_name","course_name","question","answer","opt_1","opt_2","op_3"]
         course_name = str(exam_name.split(sep='_')[0])
+
         to_vals = [exam_name,course_name]
+        st.write(to_vals,ques_bank)
+        grouped_val = ques_bank.popitem()
+        question = grouped_val[0]
+        ans_set = grouped_val[1]
+        answer = [ans for ans in ans_set.keys()][0]
+        opts = [opt for opt in ans_set.values()][0]
+        st.write(question,answer,type(answer),opts)
+      
+        to_vals.extend([question,answer])
+        to_vals.extend(opts)
+        st.write(to_vals)
 
-        for key, vals in ques_bank.items():
-            to_vals.append(key)
-            for ans, options in vals.items():
-                for opt in options:
-                    to_vals.append(opt)
-                to_vals.append(str(ans))
 
-        if self.sql_con.insert(table=self.table,to_cols=to_cols,to_vals=to_vals) == None:
-             st.success(f'Your assignment, {exam_name}, was saved!')
+        st.stop()
+
+        assign_name = "assign_name"
+        course = "course_name",
+        first = [assign_name,course]
+        
+        st.write([assign_name,course,vals[0*self.set_ques_len:(0+1)*self.set_ques_len]])
+
+        for i in range(group_len):
+            self.sql_con.insert(table=self.table,to_cols=to_cols,to_vals=vals[i*group_len:(i+1)*group_len]) == None
+        else:
+            st.success(f'Your assignment, {exam_name}, was saved!')
            
         # st.write(self.sql_con.get(table='assignments',col=None))
 

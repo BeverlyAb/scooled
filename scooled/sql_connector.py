@@ -45,7 +45,6 @@ class SQLConnector():
         # self.cur.close()
 
         # return out
-        table = 'test.' + table
         query = f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} in ('{val_from_col}');"
         self.query(query)
 
@@ -65,7 +64,6 @@ class SQLConnector():
 
 
     def insert(self, table : str, to_cols : list, to_vals : list):
-        table = 'test.' + table
         to_cols = ", ".join(to_cols)
         to_vals = ["'" + val + "'" for val in to_vals]
         to_vals = ", ".join(to_vals)
