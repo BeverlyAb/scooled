@@ -26,12 +26,13 @@ class Assignments:
         st.title('Assignment Overview')
 
         notes, vals = self.split_notes_and_questions(assign)
+        assign_name = vals[0]
         if vals != None:
             df = self.group_by_type(vals[2:])
-            st.subheader(vals[0])
+            st.subheader(assign_name)
             st.table(df)
 
-        self.edit_notes(df)
+        self.edit_notes(df,assign_name)
         if st.sidebar.button('Back to Courses'):
             self.reset_pg(pt.teacher)
 
@@ -49,9 +50,7 @@ class Assignments:
         column_name = [col[0] for col in cols]
         return column_name[:-1] #exclude rowindex
 
-    def edit_notes(self,df):
-        st.write(df)
-    
+    def edit_notes(self,df,assign_name):
         with st.form('Note Edit'):
             # st.expander('Which Question?')    
             q = st.selectbox(label='Edit notes to which question?',options=range(1,self.set_ques_len+1))
@@ -59,9 +58,7 @@ class Assignments:
             corr_q = df['Question'][q]
             q = 'q'+str(q)
             if st.form_submit_button('OK'):
-                query = f"UPDATE test.{self.table} SET Notes = '{note}' WHERE {q} = \"{corr_q}\""
-                st.write(query)
-                # st.stop()
+                query = f"UPDATE test.{self.table} SET Notes = '{note}' WHERE assign_name = '{assign_name}' AND {q} = '{corr_q}';"
                 self.sql_con.query(query)
 
     def split_notes_and_questions(self,assign):
