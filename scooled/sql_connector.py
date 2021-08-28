@@ -50,7 +50,7 @@ class SQLConnector():
         # to_cols = ['"' + val + '"' for val in to_cols]
         to_cols = ", ".join(to_cols)
         to_vals = ["'" + val + "'" for val in to_vals]
-        to_vals = ",".join(to_vals)
+        to_vals = ", ".join(to_vals)
 
         self.cur = self.conn.cursor()
         try:
