@@ -60,25 +60,11 @@ class SQLConnector():
 
     def insert(self, table : str, to_cols : list, to_vals : list):
         table = 'test.' + table
-        # to_cols = ['"' + val + '"' for val in to_cols]
         to_cols = ", ".join(to_cols)
         to_vals = ["'" + val + "'" for val in to_vals]
         to_vals = ", ".join(to_vals)
-        self.connect()
-
-        with self.conn:
-            with self.conn.cursor() as cur:
-                try:
-                    query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
-                    cur.execute(query)
-                except Exception as e:
-                    st.error(e)
-                    return e
-        self.conn.close()
-        
-        return None
-
-
+        query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
+        self.query(query)
 
 if __name__ == "__main__":
     sql_con = SQLConnector()
