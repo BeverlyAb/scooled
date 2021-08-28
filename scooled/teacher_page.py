@@ -34,6 +34,7 @@ class Teacher:
         st.write(f'{course} Assignments')
         return course
 
+
     def assignments(self,course,assignment_table)->None:
         course_display = assignment_table.filter([course,course+'_description'], axis=1)
         assignments = assignment_table[course]

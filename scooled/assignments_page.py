@@ -18,20 +18,21 @@ class Assignments:
 
     def display(self):
         st.sidebar.title('Menu')
-        course = self.assignment.columns[0]
-        st.title(course)
-        st.write(self.load_from_db(course))
+        assign = self.assignment.columns[0]
+        st.title(assign)
+        # course = assign.split('_')[0]
+        st.write(self.load_from_db(assign))
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
 
     def load_from_db(self, course):
-        self.sql_con.get_where_specified(table=self.table,get_cols=['*'],from_col='course_name',val_from_col=course)
+        self.sql_con.get_where_specified(table=self.table,get_cols=['*'],from_col='q1',val_from_col=course)
         st.write(self.sql_con.get(table=self.table,col=['*']))
-        st.write(self.sql_con.query('SHOW COLUMNS FROM test.assignments'))
+        # st.write(self.sql_con.query('SHOW COLUMNS FROM test.assignments'))
     
     def create_new_pg(self):
         st.sidebar.title('Menu')
-        exam_name = self.assignment.columns[0]
+        exam_name = 'Math_1'#self.assignment.columns[0]
         st.title(exam_name)
         set_ques_len = 4
         set_ans_len = 3

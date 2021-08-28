@@ -37,7 +37,7 @@ class SQLConnector():
         
         self.cur = self.conn.cursor()
         table = 'test.' + table
-        self.cur.execute(f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} in ('{val_from_col}');")
+        self.cur.execute(f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} = ('{val_from_col}');")
         out = pd.Series()   
         out = [val for val in self.cur]
         self.cur.close()
