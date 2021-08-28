@@ -31,7 +31,7 @@ class Assignments:
         ques_bank = self.get_bank_from_forms(exam_name,set_ques_len,set_ans_len)
 
         if st.button('Submit'):
-            self.write_to_db(ques_bank,exam_name)                         # add to db
+            self.write_to_db(ques_bank,exam_name)               # add to db
             self.reset_forms()                                  # clear forms
             self.reset_pg(pt.teacher)                           # go back to teacher pg
         if st.sidebar.button('Return to Courses'):
@@ -50,12 +50,10 @@ class Assignments:
             for ans, options in vals.items():
                 for opt in options:
                     to_vals.append(opt)
-                to_vals.append(ans)
+                to_vals.append(str(ans))
 
-
-        st.write(to_vals)
-        # st.write(ques_bank,exam_name,to_vals)
-        # self.sql_con.insert()
+        self.sql_con.insert(table='assignments',to_cols=to_cols,to_vals=to_vals)
+        # st.write(self.sql_con.get(table='assignments',col=None))
 
     def get_bank_from_forms(self,exam_name,set_ques_len,set_ans_len):
         ques_bank = {} # { exam_question : { answer index : options } }

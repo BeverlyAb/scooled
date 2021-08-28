@@ -44,7 +44,6 @@ class SQLConnector():
         to_cols = ",".join(to_cols)
         to_vals = ["'" + val + "'" for val in to_vals]
         to_vals = ",".join(to_vals)
-        st.write(to_cols,to_vals)
         self.cur.execute(f"INSERT into {table} ({to_cols}) VALUES ({to_vals})")
 
 if __name__ == "__main__":
