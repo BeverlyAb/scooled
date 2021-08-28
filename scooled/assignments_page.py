@@ -160,8 +160,9 @@ class Assignments:
     def reset_pg(self, go_to):
         is_bool = lambda x : type(st.session_state[x]) == bool   
         for val in filter(is_bool, st.session_state):
-            if val != go_to:
-                st.session_state[val] = False
-            else:
+            if val == go_to:
+            #     st.session_state[val] = False
+            # else:
                 st.session_state[val] = True
+        
  
