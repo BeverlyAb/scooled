@@ -1,10 +1,12 @@
 # assignments_page.py
 
+from numpy.lib.function_base import append
 import streamlit as st
 from structs import PageType as pt
 import pandas as pd
 from sql_connector import SQLConnector
 import numpy as np
+import itertools
 
 class Assignments:
 
@@ -22,17 +24,23 @@ class Assignments:
         st.sidebar.title('Menu')
         assign = self.assignment.columns[0]
         st.title(assign)
-        # df = self.view_assign(assign)
+
         self.load_from_db(assign,['*'])
-        df = st.session_state[pt.submit]
+        val = st.session_state[pt.submit]
         col = self.get_cols_from_db()
-        st.write(df)
-        st.write(col)
+        st.write(val,col)
+        
+        st.write(*zip(val[0], col))
+        # for lval, rval in zip(val, col):
+        #     st.write(lval,rval)
+
+
         st.stop()
-
-
+        st.write(out)
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
+
+
     def get_cols_from_db(self):
         self.sql_con.query(f"SHOW COLUMNS FROM test.{self.table}")
         cols = st.session_state[pt.submit]
