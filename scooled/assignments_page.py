@@ -30,16 +30,19 @@ class Assignments:
 
     def view_assign(self,assign):
         ques_bank = []
-        for i in range(1,self.set_ques_len+1):
-            col_name = ['q'+str(i)]
-            self.load_from_db(assign=assign,col=col_name)
-            val = st.session_state[pt.submit][0]
-            ques_bank.extend(val)
-        out = pd.DataFrame(pd.Series(ques_bank,name='Questions'))
+        ques_series = self.sort_to_series(assign,ques_bank,'Questions',"")
+        out = pd.DataFrame(ques_series)
         out.index = np.arange(1, len(out)+1)
         return out
             
+    def sort_to_series(self,assign,bank,series_name, end_col):
+        for i in range(1,self.set_ques_len+1):
+            col_name = ['q'+str(i)+end_col]
+            self.load_from_db(assign=assign,col=col_name)
+            val = st.session_state[pt.submit][0]
+            bank.extend(val)
 
+        return pd.Series(bank,name=series_name)
 
     def load_from_db(self, assign, col :list):
         ''' updates st.session_state[pt.submit]'''
