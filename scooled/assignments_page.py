@@ -122,21 +122,22 @@ class Assignments:
             self.reset_pg(pt.teacher)                           # go back to teacher pg
 
     def write_to_db(self, ques_bank : dict,exam_name):
-        to_cols = ["assign_name","course_name","question","answer","opt_1","opt_2","op_3"]
+        to_cols = ["assign_name","course_name","question","question_num","answer","opt_1","opt_2","op_3"]
         course_name = str(exam_name.split(sep='_')[0])
 
-        to_vals = [exam_name,course_name]
-        st.write(to_vals,ques_bank)
-        grouped_val = ques_bank.popitem()
-        question = grouped_val[0]
-        ans_set = grouped_val[1]
-        answer = [ans for ans in ans_set.keys()][0]
-        opts = [opt for opt in ans_set.values()][0]
-        st.write(question,answer,type(answer),opts)
-      
-        to_vals.extend([question,answer])
-        to_vals.extend(opts)
-        st.write(to_vals)
+        for i in reversed(range(self.set_ques_len)):
+            to_vals = [exam_name,course_name]    
+            grouped_val = ques_bank.popitem()
+            question = grouped_val[0]
+            question_num = i+1
+            ans_set = grouped_val[1]
+            answer = [ans for ans in ans_set.keys()][0]
+            opts = [opt for opt in ans_set.values()][0]
+        
+        
+            to_vals.extend([question,answer,question_num])
+            to_vals.extend(opts)
+            st.write(to_vals)
 
 
         st.stop()
