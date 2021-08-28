@@ -30,8 +30,11 @@ class Assignments:
 
     def view_assign(self,assign):
         ques_bank = []
+        assign_bank = []
         ques_series = self.sort_to_series(assign,ques_bank,'Questions',"")
-        out = pd.DataFrame(ques_series)
+        ans_series = self.sort_to_series(assign,assign_bank,'Answers',"_ans")
+        series = [ques_series,ans_series]
+        out = pd.DataFrame(series).transpose()
         out.index = np.arange(1, len(out)+1)
         return out
             
