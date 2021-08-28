@@ -1,3 +1,4 @@
+from numpy import add
 import psycopg2
 import streamlit as st
 import os
@@ -36,6 +37,14 @@ class SQLConnector():
         out = [val for val in self.cur]
         return out
 
+    def insert(self, table : str, to_cols : list, to_vals : list):
+        table = 'test.' + table
+        to_cols = ",".join(to_cols)
+        to_vals = ["'" + val + "'" for val in to_vals]
+        to_vals = ",".join(to_vals)
+        st.write(to_cols,to_vals)
+        self.cur.execute(f"INSERT into {table} ({to_cols}) VALUES ({to_vals})")
+
 if __name__ == "__main__":
     sql_con = SQLConnector()
     get_cols = ['teacher','student']
@@ -45,6 +54,12 @@ if __name__ == "__main__":
     # out= sql_con.get(table,get_cols,from_col,val_from_col)
     out = sql_con.get(table)
     st.write(out)
+
+    to_cols = ['name','teacher','student']
+    to_vals = ['MATH_0','Erly','STUDENT_0']
+    sql_con.insert(table,to_cols,to_vals)
+    st.write(sql_con.get(table))
+
 # st.write(cur.execute("SHOW TABLES"))
 
 # st.stop()
