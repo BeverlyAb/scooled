@@ -12,21 +12,24 @@ class SQLConnector():
         # self.cur.execute("USE test;")
 
     def __del__(self):
-        self.cur.close()
         del self.conn
 
+    def connect(self):
+        self.conn = psycopg2.connect(database = os.environ["db"],user = os.environ["user"] ,host = os.environ["hostname"] ,password = os.environ["password"], port = os.environ["port"])  
+        
 
     def query(self, command : str):
-        self.cur = self.conn.cursor()
+        self.connect()
 
-        try:
-            out = self.cur.execute(command)
-        except Exception as e:
-            st.write(e)
-            self.cur.close()
-            return e
-
-        self.cur.close()
+        with self.conn:
+            with self.conn.cursor() as cur:
+                try:
+                    out = cur.execute(command)
+                except Exception as e:
+                    st.write(e)
+                    cur.close()
+                    return e
+        self.conn.close()
         return out
 
     def get_where_specified(self,table : str, get_cols : list, from_col : str, val_from_col : str ):
@@ -61,20 +64,18 @@ class SQLConnector():
         to_cols = ", ".join(to_cols)
         to_vals = ["'" + val + "'" for val in to_vals]
         to_vals = ", ".join(to_vals)
+        self.connect()
 
         with self.conn:
-            with self.conn.cursor() as self.cur:
+            with self.conn.cursor() as cur:
                 try:
                     query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
-                    self.cur.execute(query)
-                    st.write(query)
-                    st.write(self.get('assignments',['*']))
+                    cur.execute(query)
                 except Exception as e:
                     st.error(e)
-                    # self.cur.close()
                     return e
-
-        self.cur.close()
+        self.conn.close()
+        
         return None
 
 
