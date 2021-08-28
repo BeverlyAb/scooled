@@ -14,29 +14,42 @@ class Assignments:
         #     st.session_state[pt.submit] = False
         self.sql_con = SQLConnector()
         self.table = 'assignments'
+        self.set_ques_len = 4
+        self.set_opt_len = 3
         
 
     def display(self):
         st.sidebar.title('Menu')
         assign = self.assignment.columns[0]
         st.title(assign)
-        self.load_from_db(assign)    #load updates st.session_state[pt.submit]
-        st.write(st.session_state[pt.submit])
+        ques_bank = self.view_assign(assign)
+        st.write(ques_bank) 
+
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
 
-    def load_from_db(self, assign):
-        return self.sql_con.get_where_specified(table=self.table,get_cols=['*'],from_col='assign_name',val_from_col=assign)
+    def view_assign(self,assign):
+        ques_bank = []
+        for i in range(1,self.set_ques_len+1):
+            col_name = ['q'+str(i)]
+            self.load_from_db(assign=assign,col=col_name)
+            ques_bank.append(st.session_state[pt.submit])
+        return ques_bank
+            
+
+
+    def load_from_db(self, assign, col :list):
+        ''' updates st.session_state[pt.submit]'''
+        self.sql_con.get_where_specified(table=self.table,get_cols=col,from_col='assign_name',val_from_col=assign)
 
     
     def create_new_pg(self):
         st.sidebar.title('Menu')
         exam_name = 'Math_1'#self.assignment.columns[0]
         st.title(exam_name)
-        set_ques_len = 4
-        set_ans_len = 3
+
         
-        ques_bank = self.get_bank_from_forms(exam_name,set_ques_len,set_ans_len)
+        ques_bank = self.get_bank_from_forms(exam_name,self.set_ques_len,self.set_ans_len)
 
         if st.button('Submit'):
             self.write_to_db(ques_bank,exam_name)               # add to db

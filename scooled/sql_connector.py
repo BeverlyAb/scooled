@@ -18,14 +18,15 @@ class SQLConnector():
     def connect(self):
         self.conn = psycopg2.connect(database = os.environ["db"],user = os.environ["user"] ,host = os.environ["hostname"] ,password = os.environ["password"], port = os.environ["port"])  
         
-
     def query(self, command : str):
+        # st.write(command)
         self.connect()
 
         with self.conn:
             with self.conn.cursor() as cur:
                 try:
                     cur.execute(command)
+
                     st.session_state[pt.submit] = cur.fetchall()
                 except Exception as e:
                     st.write(e)
@@ -35,8 +36,6 @@ class SQLConnector():
 
     def get_where_specified(self,table : str, get_cols : list, from_col : str, val_from_col : str ):
         '''get certain col(s) based on certain col value'''
-        
-
         # self.cur = self.conn.cursor()
         # table = 'test.' + table
         # self.cur.execute(f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} = ('{val_from_col}');")
@@ -47,7 +46,6 @@ class SQLConnector():
         # return out
         table = 'test.' + table
         query = f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} in ('{val_from_col}');"
-        st.write(query)
         self.query(query)
 
     def get(self,table : str, col : list):
