@@ -46,7 +46,7 @@ class SQLConnector():
 
     def get(self,table : str, col : list):
         '''get everything or just one col - calling from SQL is faster than me structuring them up into DF'''
-        
+        self.connect()
         table = 'test.' + table     
         self.cur = self.conn.cursor()
         
@@ -55,8 +55,10 @@ class SQLConnector():
         out = [val for val in self.cur]
         
         self.cur.close()
+        self.conn.close()
         st.write(f"SELECT {','.join(col)} FROM {table};")
         return out
+
 
     def insert(self, table : str, to_cols : list, to_vals : list):
         table = 'test.' + table
@@ -65,6 +67,7 @@ class SQLConnector():
         to_vals = ", ".join(to_vals)
         query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
         self.query(query)
+        st.write(self.get('courses',['*']))
 
 if __name__ == "__main__":
     sql_con = SQLConnector()
