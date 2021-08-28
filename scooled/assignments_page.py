@@ -101,8 +101,9 @@ class Assignments:
                             options.append(st.text_input(label='Option '+str(ind+1),key = str(i)+str(ind)))
 
                 ans = st.selectbox(label='Correct option:',options=range(1,set_ans_len+1),key=exam_name+'ans'+str(i))
+                ans = options[ans-1]
                 st.form_submit_button('OK')
-            ques_bank[question] = {int(ans)-1 : options}
+            ques_bank[question] = {ans : options}
             options = []
         return ques_bank
 
