@@ -41,16 +41,15 @@ class Assignments:
         if st.button('Submit'):
             self.write_to_db(ques_bank,exam_name)               # add to db
             self.reset_forms()                                  # clear forms
-            st.success(f'Your assignment, {exam_name}, was saved!')
             # self.reset_pg(pt.teacher)                           # go back to teacher pg
         if st.sidebar.button('Return to Courses'):
             self.reset_forms()                                  # clear forms
             self.reset_pg(pt.teacher)                           # go back to teacher pg
 
     def write_to_db(self, ques_bank,exam_name):
-        to_cols = ["assign_name", "course_name","Q1", "Q1_OP_1","Q1_OP_2", "Q1_OP_3",
-	            "Q1_ANS","Q2","Q2_OP_1","Q2_OP_2","Q2_OP_3","Q2_ANS","Q3","Q3_OP_1",
-                "Q3_OP_2","Q3_OP_3","Q3_ANS","Q4","Q4_OP_1","Q4_OP_2","Q4_OP_3","Q4_ANS"]
+        to_cols = ["assign_name", "course_name","q1", "q1_op_1","q1_op_2", "q1_op_3",
+	            "q1_ans","q2","q2_op_1","q2_op_2","q2_op_3","q2_ans","q3","q3_op_1",
+                "q3_op_2","q3_op_3","q3_ans","q4","q4_op_1","q4_op_2","q4_op_3","q4_ans"]
         course_name = str(exam_name.split(sep='_')[0])
         to_vals = [exam_name,course_name]
 
@@ -61,7 +60,9 @@ class Assignments:
                     to_vals.append(opt)
                 to_vals.append(str(ans))
 
-        self.sql_con.insert(table=self.table,to_cols=to_cols,to_vals=to_vals)
+        if self.sql_con.insert(table=self.table,to_cols=to_cols,to_vals=to_vals) == None:
+             st.success(f'Your assignment, {exam_name}, was saved!')
+           
         # st.write(self.sql_con.get(table='assignments',col=None))
 
     def get_bank_from_forms(self,exam_name,set_ques_len,set_ans_len):
