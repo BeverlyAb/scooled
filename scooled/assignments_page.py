@@ -3,6 +3,7 @@
 import streamlit as st
 from structs import PageType as pt
 import pandas as pd
+from sql_connector import SQLConnector
 
 class Assignments:
 
@@ -10,6 +11,7 @@ class Assignments:
         self.assignment = st.session_state[pt.assign]
         # if st.session_state[pt.submit] not in st.session_state:
         #     st.session_state[pt.submit] = False
+        self.sql_con = SQLConnector()
         
 
     def display(self):
@@ -29,11 +31,31 @@ class Assignments:
         ques_bank = self.get_bank_from_forms(exam_name,set_ques_len,set_ans_len)
 
         if st.button('Submit'):
-            st.session_state[pt.submit] = exam_name, ques_bank  # update submit
+            self.write_to_db(ques_bank,exam_name)                         # add to db
             self.reset_forms()                                  # clear forms
             self.reset_pg(pt.teacher)                           # go back to teacher pg
         if st.sidebar.button('Return to Courses'):
-            self.reset_pg(pt.teacher)
+            self.reset_forms()                                  # clear forms
+            self.reset_pg(pt.teacher)                           # go back to teacher pg
+
+    def write_to_db(self, ques_bank,exam_name):
+        to_cols = ["assign_name", "course_name","Q1", "Q1_OP_1","Q1_OP_2", "Q1_OP_3",
+	            "Q1_ANS","Q2","Q2_OP_1","Q2_OP_2","Q2_OP_3","Q2_ANS","Q3","Q3_OP_1",
+                "Q3_OP_2","Q3_OP_3","Q3_ANS","Q4","Q4_OP_1","Q4_OP_2","Q4_OP_3","Q4_ANS"]
+        course_name = str(exam_name.split(sep='_')[0])
+        to_vals = [exam_name,course_name]
+
+        for key, vals in ques_bank.items():
+            to_vals.append(key)
+            for ans, options in vals.items():
+                for opt in options:
+                    to_vals.append(opt)
+                to_vals.append(ans)
+
+
+        st.write(to_vals)
+        # st.write(ques_bank,exam_name,to_vals)
+        # self.sql_con.insert()
 
     def get_bank_from_forms(self,exam_name,set_ques_len,set_ans_len):
         ques_bank = {} # { exam_question : { answer index : options } }

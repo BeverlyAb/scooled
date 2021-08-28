@@ -38,14 +38,14 @@ if __name__ == "__main__":
         new_assign = Assignments()
         new_assign.create_new_pg()
 
+        # Not sure why pt.bank wasn't saved under first call of app main() 
+        if pt.bank not in st.session_state:         
+            st.session_state[pt.bank] = QuestionBank() 
+
         if st.session_state[pt.submit] != False:
             exam_name = st.session_state[pt.submit][0]
             assign = st.session_state[pt.submit][1]
-            
-            # Not sure why pt.bank wasn't saved under first call of app main() 
-            if pt.bank not in st.session_state:         
-               st.session_state[pt.bank] = QuestionBank() 
-            
             st.session_state[pt.bank].add(exam_name,assign)
+            
         st.write(len(st.session_state[pt.bank].get_bank()),st.session_state[pt.bank])
             
