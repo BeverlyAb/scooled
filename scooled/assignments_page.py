@@ -23,14 +23,19 @@ class Assignments:
     def display(self):
         st.sidebar.title('Menu')
         assign = self.assignment.columns[0]
-        st.title(assign)
+        st.title('Assignment Overview')
 
         self.load_from_db(assign,['*'])
-        vals = st.session_state[pt.submit][0]
-        df = self.group_by_type(vals[2:])
-        st.write(df)
+        if len(st.session_state[pt.submit]) > 0:
+            vals = st.session_state[pt.submit][0]
+            df = self.group_by_type(vals[2:])
+            st.subheader(vals[0])
+            st.write(df)
+        else:
+            pass
 
-        if st.sidebar.button('Return to Courses'):
+        
+        if st.sidebar.button('Back to Courses'):
             self.reset_pg(pt.teacher)
 
 
@@ -123,6 +128,7 @@ class Assignments:
             options = []
         return ques_bank
 
+    @st.cache
     def reset_forms(self):
         non_form_states = [pt.teacher,pt.edit_pg,pt.new_pg,pt.submit,pt.assign]
         for val in filter(lambda x: x not in non_form_states, st.session_state):
