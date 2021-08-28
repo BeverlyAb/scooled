@@ -18,8 +18,16 @@ class SQLConnector():
 
     def query(self, command : str):
         self.cur = self.conn.cursor()
-        self.cur.execute(command)
+
+        try:
+            out = self.cur.execute(command)
+        except Exception as e:
+            st.write(e)
+            self.cur.close()
+            return e
+
         self.cur.close()
+        return out
 
     def get_where_specified(self,table : str, get_cols : list, from_col : str, val_from_col : str ):
         '''get certain col(s) based on certain col value'''
@@ -38,9 +46,11 @@ class SQLConnector():
         
         table = 'test.' + table     
         self.cur = self.conn.cursor()
+        
         self.cur.execute(f"SELECT {','.join(col)} FROM {table};")
         out = pd.DataFrame()   
         out = [val for val in self.cur]
+        
         self.cur.close()
         st.write(f"SELECT {','.join(col)} FROM {table};")
         return out
@@ -52,17 +62,19 @@ class SQLConnector():
         to_vals = ["'" + val + "'" for val in to_vals]
         to_vals = ", ".join(to_vals)
 
-        self.cur = self.conn.cursor()
-        try:
-            query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
-            self.cur.execute(query)
-            st.write(query)
-            # st.write(self.get('assignments',['*']))
-        except Exception as e:
-            st.error(e)
-            return e
-        finally:
-            self.cur.close()
+        with self.conn:
+            with self.conn.cursor() as self.cur:
+                try:
+                    query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
+                    self.cur.execute(query)
+                    st.write(query)
+                    st.write(self.get('assignments',['*']))
+                except Exception as e:
+                    st.error(e)
+                    # self.cur.close()
+                    return e
+
+        self.cur.close()
         return None
 
 
@@ -75,12 +87,12 @@ if __name__ == "__main__":
     val_from_col = 'ENGLISH_0'
     out= sql_con.get_where_specified(table,get_cols,from_col,val_from_col)
     # out = sql_con.get(table,None)
-    st.write(out)
+    # st.write(out)
 
-    # to_cols = ['name','teacher','student']
-    # to_vals = ['MATH_0','Erly','STUDENT_0']
-    # sql_con.insert(table,to_cols,to_vals)
-    # st.write(sql_con.get(table))
+    to_cols = ['name','teacher','student']
+    to_vals = ['MATH_0','Erly','STUDENT_0']
+    sql_con.insert(table,to_cols,to_vals)
+    st.write(sql_con.get(table,['*']))
 
 # st.write(cur.execute("SHOW TABLES"))
 
