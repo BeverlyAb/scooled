@@ -47,7 +47,7 @@ class Teacher:
         with col0:
             # description = course+'_description'+ assignment.split(sep='_')[1]
             # assignment_table[course+'_description'][int(assignment.split(sep='_')[1])]
-            if st.button(label='Edit '+ assignment,key='edit'):
+            if st.button(label='View '+ assignment,key='view'):
                 desc = pd.Series(course_display[course+'_description'][int(assignment.split(sep='_')[1])],name=assignment)
                 st.session_state[pt.assign] = pd.DataFrame(desc)
                 self.edit_assign()#course_display[course+'_description'][int(assignment.split(sep='_')[1])])
