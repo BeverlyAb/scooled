@@ -25,19 +25,15 @@ class Assignments:
         assign = self.assignment.columns[0]
         st.title('Assignment Overview')
 
-        self.load_from_db(assign,['*'])
-        if len(st.session_state[pt.submit]) > 0:
-            vals = st.session_state[pt.submit][0]
+        notes, vals = self.split_notes_and_questions(assign)
+        if vals != None:
             df = self.group_by_type(vals[2:])
             st.subheader(vals[0])
-            st.write(df)
-        else:
-            pass
+            st.table(df)
 
-        
+
         if st.sidebar.button('Back to Courses'):
             self.reset_pg(pt.teacher)
-
 
     def get_cols_from_db(self):
                 # cols = self.get_cols_from_db()
@@ -53,6 +49,22 @@ class Assignments:
         column_name = [col[0] for col in cols]
         return column_name[:-1] #exclude rowindex
             
+    def split_notes_and_questions(self,assign):
+        self.load_from_db(assign,['*'])
+        if len(st.session_state[pt.submit]) > 0:
+            everything = st.session_state[pt.submit][0]
+
+            self.load_from_db(assign,['Notes'])
+            if len(st.session_state[pt.submit]) > 0:
+                notes = st.session_state[pt.submit][0]
+                q_bank = [val for val in everything if val not in notes]
+                return notes, q_bank
+
+            else: 
+                return None
+        else:
+            return None
+
     def group_by_type(self,vals):
         group_len = self.set_ques_len + 1 # question + ans
         q1 = []
@@ -121,14 +133,13 @@ class Assignments:
                         with col:
                             options.append(st.text_input(label='Option '+str(ind+1),key = str(i)+str(ind)))
 
-                ans = st.selectbox(label='Correct option:',options=range(1,set_ans_len+1),key=exam_name+'ans'+str(i))
+                ans = st.selectbox(label='Correct answer',options=range(1,set_ans_len+1),key=exam_name+'ans'+str(i))
                 ans = options[ans-1]
                 st.form_submit_button('OK')
             ques_bank[question] = {ans : options}
             options = []
         return ques_bank
 
-    @st.cache
     def reset_forms(self):
         non_form_states = [pt.teacher,pt.edit_pg,pt.new_pg,pt.submit,pt.assign]
         for val in filter(lambda x: x not in non_form_states, st.session_state):

@@ -29,8 +29,8 @@ class Teacher:
 
     def display(self, courses)->None:
         st.title("s'CoolEd")
-        st.sidebar.title(f"{self.name}'s Courses")
-        course = st.sidebar.selectbox(label='Courses',options=courses)
+        st.sidebar.title(f"{self.name}'s Subjects")
+        course = st.sidebar.selectbox(label='Subjects',options=courses)
         st.write(f'{course} Assignments')
         return course
 
