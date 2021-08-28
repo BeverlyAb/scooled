@@ -122,38 +122,25 @@ class Assignments:
             self.reset_pg(pt.teacher)                           # go back to teacher pg
 
     def write_to_db(self, ques_bank : dict,exam_name):
-        to_cols = ["assign_name","course_name","question","question_num","answer","opt_1","opt_2","op_3"]
+        to_cols = ["assign_name","course_name","question","question_num","answer","opt1","opt2","opt3"]
         course_name = str(exam_name.split(sep='_')[0])
 
         for i in reversed(range(self.set_ques_len)):
             to_vals = [exam_name,course_name]    
             grouped_val = ques_bank.popitem()
             question = grouped_val[0]
-            question_num = i+1
+            question_num = str(i+1)
             ans_set = grouped_val[1]
             answer = [ans for ans in ans_set.keys()][0]
             opts = [opt for opt in ans_set.values()][0]
         
         
-            to_vals.extend([question,answer,question_num])
+            to_vals.extend([question,question_num,answer])
             to_vals.extend(opts)
             st.write(to_vals)
-
-
-        st.stop()
-
-        assign_name = "assign_name"
-        course = "course_name",
-        first = [assign_name,course]
-        
-        st.write([assign_name,course,vals[0*self.set_ques_len:(0+1)*self.set_ques_len]])
-
-        for i in range(group_len):
-            self.sql_con.insert(table=self.table,to_cols=to_cols,to_vals=vals[i*group_len:(i+1)*group_len]) == None
+            self.sql_con.insert(table=self.table,to_cols=to_cols,to_vals=to_vals)
         else:
             st.success(f'Your assignment, {exam_name}, was saved!')
-           
-        # st.write(self.sql_con.get(table='assignments',col=None))
 
     def get_bank_from_forms(self,exam_name,set_ques_len,set_ans_len):
         ques_bank = {} # { exam_question : { answer index : options } }
