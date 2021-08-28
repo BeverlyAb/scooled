@@ -32,6 +32,7 @@ class Assignments:
             st.subheader(assign_name)
             st.table(df)
 
+        self.view_notes(notes)
         self.edit_notes(df,assign_name)
         if st.sidebar.button('Back to Courses'):
             self.reset_pg(pt.teacher)
@@ -50,24 +51,29 @@ class Assignments:
         column_name = [col[0] for col in cols]
         return column_name[:-1] #exclude rowindex
 
+    def view_notes(self,notes : tuple):
+        with st.expander(label='Feedback'):
+            for note in notes:
+                st.write(note)
+
     def edit_notes(self,df,assign_name):
-        with st.form('Note Edit'):
-            # st.expander('Which Question?')    
-            q = st.selectbox(label='Edit notes to which question?',options=range(1,self.set_ques_len+1))
-            note = st.text_input('Write text or link to a website or image!')
-            corr_q = df['Question'][q]
-            q = 'q'+str(q)
-            if st.form_submit_button('OK'):
-                query = f"UPDATE test.{self.table} SET Notes = '{note}' WHERE assign_name = '{assign_name}' AND {q} = '{corr_q}';"
-                self.sql_con.query(query)
-                st.success(f"Updated notes for {q}")
+        if st.checkbox(label='Edit Feedback Notes'):
+            with st.form('Note Edit'):   
+                q = st.selectbox(label='Edit notes for which question?',options=range(1,self.set_ques_len+1))
+                note = st.text_input('Write text or link to a website or image!')
+                corr_q = df['Question'][q]
+                q = 'q'+str(q)
+                if st.form_submit_button('OK'):
+                    query = f"UPDATE test.{self.table} SET Notes = '{note}' WHERE assign_name = '{assign_name}' AND {q} = '{corr_q}';"
+                    self.sql_con.query(query)
+                    st.success(f"Updated notes for {q}")
 
     def split_notes_and_questions(self,assign):
         self.load_from_db(assign,['*'])
         if len(st.session_state[pt.submit]) > 0:
             everything = st.session_state[pt.submit][0]
 
-            self.load_from_db(assign,['Notes'])
+            self.load_from_db(assign,['Notes'])#,'q1','q2','q3','q4'])
             if len(st.session_state[pt.submit]) > 0:
                 notes = st.session_state[pt.submit][0]
                 q_bank = [val for val in everything if val not in notes]
