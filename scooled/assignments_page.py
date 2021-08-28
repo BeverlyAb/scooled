@@ -4,7 +4,7 @@ import streamlit as st
 from structs import PageType as pt
 import pandas as pd
 from sql_connector import SQLConnector
-import re
+import numpy as np
 
 class Assignments:
 
@@ -34,10 +34,9 @@ class Assignments:
             col_name = ['q'+str(i)]
             self.load_from_db(assign=assign,col=col_name)
             val = st.session_state[pt.submit][0]
-            st.write(val[0].split()[0])
             ques_bank.extend(val)
         out = pd.DataFrame(pd.Series(ques_bank,name='Questions'))
-  
+        out.index = np.arange(1, len(out)+1)
         return out
             
 
