@@ -25,8 +25,7 @@ class Assignments:
         # df = self.view_assign(assign)
         self.load_from_db(assign,['*'])
         df = st.session_state[pt.submit]
-        self.sql_con.query(f"SHOW COLUMNS FROM test.{self.table}")
-        col = st.session_state[pt.submit]
+        col = self.get_cols_from_db()
         st.write(df)
         st.write(col)
         st.stop()
@@ -34,6 +33,12 @@ class Assignments:
 
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
+    def get_cols_from_db(self):
+        self.sql_con.query(f"SHOW COLUMNS FROM test.{self.table}")
+        cols = st.session_state[pt.submit]
+        column_name = [col[0] for col in cols]
+        return column_name[:-1] #exclude rowindex
+
 
     def view_assign(self,assign):
         ques_bank = []
