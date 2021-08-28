@@ -20,15 +20,14 @@ class Assignments:
         st.sidebar.title('Menu')
         assign = self.assignment.columns[0]
         st.title(assign)
-        # course = assign.split('_')[0]
-        st.write(self.load_from_db(assign))
+        self.load_from_db(assign)    #load updates st.session_state[pt.submit]
+        st.write(st.session_state[pt.submit])
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
 
-    def load_from_db(self, course):
-        self.sql_con.get_where_specified(table=self.table,get_cols=['*'],from_col='q1',val_from_col=course)
-        st.write(self.sql_con.get(table=self.table,col=['*']))
-        # st.write(self.sql_con.query('SHOW COLUMNS FROM test.assignments'))
+    def load_from_db(self, assign):
+        return self.sql_con.get_where_specified(table=self.table,get_cols=['*'],from_col='assign_name',val_from_col=assign)
+
     
     def create_new_pg(self):
         st.sidebar.title('Menu')

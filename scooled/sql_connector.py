@@ -1,8 +1,9 @@
-from numpy import add
+from structs import PageType as pt
 import psycopg2
 import streamlit as st
 import os
 import pandas as pd
+
 
 
 class SQLConnector():
@@ -24,25 +25,30 @@ class SQLConnector():
         with self.conn:
             with self.conn.cursor() as cur:
                 try:
-                    out = cur.execute(command)
+                    cur.execute(command)
+                    st.session_state[pt.submit] = cur.fetchall()
                 except Exception as e:
                     st.write(e)
                     cur.close()
                     return e
         self.conn.close()
-        return out
 
     def get_where_specified(self,table : str, get_cols : list, from_col : str, val_from_col : str ):
         '''get certain col(s) based on certain col value'''
         
-        self.cur = self.conn.cursor()
-        table = 'test.' + table
-        self.cur.execute(f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} = ('{val_from_col}');")
-        out = pd.Series()   
-        out = [val for val in self.cur]
-        self.cur.close()
 
-        return out
+        # self.cur = self.conn.cursor()
+        # table = 'test.' + table
+        # self.cur.execute(f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} = ('{val_from_col}');")
+        # out = pd.Series()   
+        # out = [val for val in self.cur]
+        # self.cur.close()
+
+        # return out
+        table = 'test.' + table
+        query = f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} in ('{val_from_col}');"
+        st.write(query)
+        self.query(query)
 
     def get(self,table : str, col : list):
         '''get everything or just one col - calling from SQL is faster than me structuring them up into DF'''
@@ -56,7 +62,6 @@ class SQLConnector():
         
         self.cur.close()
         self.conn.close()
-        st.write(f"SELECT {','.join(col)} FROM {table};")
         return out
 
 
@@ -67,22 +72,21 @@ class SQLConnector():
         to_vals = ", ".join(to_vals)
         query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
         self.query(query)
-        st.write(self.get('courses',['*']))
 
-if __name__ == "__main__":
-    sql_con = SQLConnector()
-    get_cols = ['teacher','student']
-    table = 'courses'
-    from_col = 'name'
-    val_from_col = 'ENGLISH_0'
-    out= sql_con.get_where_specified(table,get_cols,from_col,val_from_col)
-    # out = sql_con.get(table,None)
-    # st.write(out)
+# if __name__ == "__main__":
+    # sql_con = SQLConnector()
+    # get_cols = ['teacher','student']
+    # table = 'courses'
+    # from_col = 'name'
+    # val_from_col = 'ENGLISH_0'
+    # out= sql_con.get_where_specified(table,get_cols,from_col,val_from_col)
+    # # out = sql_con.get(table,None)
+    # # st.write(out)
 
-    to_cols = ['name','teacher','student']
-    to_vals = ['MATH_0','Erly','STUDENT_0']
-    sql_con.insert(table,to_cols,to_vals)
-    st.write(sql_con.get(table,['*']))
+    # to_cols = ['name','teacher','student']
+    # to_vals = ['MATH_0','Erly','STUDENT_0']
+    # sql_con.insert(table,to_cols,to_vals)
+    # st.write(sql_con.get(table,['*']))
 
 # st.write(cur.execute("SHOW TABLES"))
 
