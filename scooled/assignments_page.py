@@ -22,8 +22,8 @@ class Assignments:
         st.sidebar.title('Menu')
         assign = self.assignment.columns[0]
         st.title(assign)
-        ques_bank = self.view_assign(assign)
-        st.write(ques_bank) 
+        df = self.view_assign(assign)
+        st.write(df) 
 
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
@@ -33,8 +33,12 @@ class Assignments:
         for i in range(1,self.set_ques_len+1):
             col_name = ['q'+str(i)]
             self.load_from_db(assign=assign,col=col_name)
-            ques_bank.append(st.session_state[pt.submit])
-        return ques_bank
+            val = st.session_state[pt.submit][0]
+            st.write(val[0].split()[0])
+            ques_bank.extend(val)
+        out = pd.DataFrame(pd.Series(ques_bank,name='Questions'))
+  
+        return out
             
 
 
@@ -49,7 +53,7 @@ class Assignments:
         st.title(exam_name)
 
         
-        ques_bank = self.get_bank_from_forms(exam_name,self.set_ques_len,self.set_ans_len)
+        ques_bank = self.get_bank_from_forms(exam_name,self.set_ques_len,self.set_opt_len)
 
         if st.button('Submit'):
             self.write_to_db(ques_bank,exam_name)               # add to db
@@ -82,8 +86,8 @@ class Assignments:
         ques_bank = {} # { exam_question : { answer index : options } }
         for i in range(set_ques_len):
             with st.form(exam_name+'_Form_'+str(i)):
-                question = exam_name+'_'+str(i)+','
-                question += st.text_input(label="Question "+str(i+1),)
+                # question = exam_name+'_'+str(i)+','
+                question = st.text_input(label="Question "+str(i+1),)
                 options = []
                 col0,col1,col2 = st.columns(set_ans_len)
                 col_arr = [col0, col1,col2]

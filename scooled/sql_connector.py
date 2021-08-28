@@ -26,13 +26,14 @@ class SQLConnector():
             with self.conn.cursor() as cur:
                 try:
                     cur.execute(command)
-
-                    st.session_state[pt.submit] = cur.fetchall()
+                    if cur.description != None:
+                        st.session_state[pt.submit] = cur.fetchall()
                 except Exception as e:
                     st.write(e)
                     cur.close()
                     return e
         self.conn.close()
+        return None
 
     def get_where_specified(self,table : str, get_cols : list, from_col : str, val_from_col : str ):
         '''get certain col(s) based on certain col value'''
@@ -69,7 +70,7 @@ class SQLConnector():
         to_vals = ["'" + val + "'" for val in to_vals]
         to_vals = ", ".join(to_vals)
         query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
-        self.query(query)
+        return self.query(query)
 
 # if __name__ == "__main__":
     # sql_con = SQLConnector()
