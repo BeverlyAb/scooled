@@ -49,18 +49,15 @@ class Assignments:
         return column_name[:-1] #exclude rowindex
             
     def group_by_type(self,vals):
+        group_len = self.set_ques_len + 1 # question + ans
         q1 = []
         q2 = []
         q3 = []
         q4 = []
         q_bank = [q1,q2,q3,q4]
-        group_len = self.set_ques_len + 1 # question + ans
-        group_ind = 0
-        for i,val in enumerate(vals):
-            if i % group_len == 0 and group_len - 1 > group_ind:
-                st.write(group_ind,i)
-                group_ind += 1
-            q_bank[group_ind] = val
+        for i in range (len(vals) // group_len + 1):
+            q_bank[i] = [[vals[group_len*i:group_len*(i+1)]]]
+
         st.write(q_bank)
             
 
