@@ -27,15 +27,19 @@ class Assignments:
 
         self.load_from_db(assign,['*'])
         vals = st.session_state[pt.submit][0]
-        cols = self.get_cols_from_db()
-        d = {}
-        for val, col in zip(vals, cols):
-            d[col] = val
-        df=pd.DataFrame(d,index=[0])
-        df.index = np.arange(1, len(df)+1)
-        st.write(df)
-        if st.sidebar.button('Return to Courses'):
-            self.reset_pg(pt.teacher)
+    
+        self.group_by_type(vals[3:])
+
+        # cols = self.get_cols_from_db()
+        # d = {}
+        # for val, col in zip(vals, cols):
+        #     d[col] = val
+
+        # df=pd.DataFrame(d,index=[0]).transpose()
+        # # df.index = np.arange(1, len(df)+1)
+        # st.write(df)
+        # if st.sidebar.button('Return to Courses'):
+        #     self.reset_pg(pt.teacher)
 
 
     def get_cols_from_db(self):
@@ -43,26 +47,22 @@ class Assignments:
         cols = st.session_state[pt.submit]
         column_name = [col[0] for col in cols]
         return column_name[:-1] #exclude rowindex
-
-
-    def view_assign(self,assign):
-        ques_bank = []
-        assign_bank = []
-        ques_series = self.sort_to_series(assign,ques_bank,'Questions',"")
-        ans_series = self.sort_to_series(assign,assign_bank,'Answers',"_ans")
-        series = [ques_series,ans_series]
-        out = pd.DataFrame(series).transpose()
-        out.index = np.arange(1, len(out)+1)
-        return out
             
-    def sort_to_series(self,assign,bank,series_name, end_col):
-        for i in range(1,self.set_ques_len+1):
-            col_name = ['q'+str(i)+end_col]
-            self.load_from_db(assign=assign,col=col_name)
-            val = st.session_state[pt.submit][0]
-            bank.extend(val)
-
-        return pd.Series(bank,name=series_name)
+    def group_by_type(self,vals):
+        q1 = []
+        q2 = []
+        q3 = []
+        q4 = []
+        q_bank = [q1,q2,q3,q4]
+        group_len = self.set_ques_len + 1 # question + ans
+        group_ind = 0
+        for i,val in enumerate(vals):
+            if i % group_len == 0 and group_len - 1 > group_ind:
+                st.write(group_ind,i)
+                group_ind += 1
+            q_bank[group_ind] = val
+        st.write(q_bank)
+            
 
     def load_from_db(self, assign, col :list):
         ''' updates st.session_state[pt.submit]'''
