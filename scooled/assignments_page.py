@@ -26,17 +26,14 @@ class Assignments:
         st.title(assign)
 
         self.load_from_db(assign,['*'])
-        val = st.session_state[pt.submit]
-        col = self.get_cols_from_db()
-        st.write(val,col)
-        
-        st.write(*zip(val[0], col))
-        # for lval, rval in zip(val, col):
-        #     st.write(lval,rval)
-
-
-        st.stop()
-        st.write(out)
+        vals = st.session_state[pt.submit][0]
+        cols = self.get_cols_from_db()
+        d = {}
+        for val, col in zip(vals, cols):
+            d[col] = val
+        df=pd.DataFrame(d,index=[0])
+        df.index = np.arange(1, len(df)+1)
+        st.write(df)
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
 
