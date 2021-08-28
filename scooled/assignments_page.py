@@ -60,6 +60,7 @@ class Assignments:
             if st.form_submit_button('OK'):
                 query = f"UPDATE test.{self.table} SET Notes = '{note}' WHERE assign_name = '{assign_name}' AND {q} = '{corr_q}';"
                 self.sql_con.query(query)
+                st.success(f"Updated notes for {q}")
 
     def split_notes_and_questions(self,assign):
         self.load_from_db(assign,['*'])
