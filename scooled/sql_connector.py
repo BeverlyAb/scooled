@@ -19,7 +19,7 @@ class SQLConnector():
     def query(self, command : str):
         self.cur.execute(command)
 
-    def get(self,table : str, get_cols : list, from_col : str, val_from_col : str ):
+    def get_where_specified(self,table : str, get_cols : list, from_col : str, val_from_col : str ):
         '''get certain col(s) based on certain col value'''
         table = 'test.' + table
         self.cur.execute(f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} in ('{val_from_col}');")
@@ -28,11 +28,13 @@ class SQLConnector():
         out = [val for val in self.cur]
         return out
 
-    def get(self,table : str ):
-        '''get everything'''
+    def get(self,table : str, col : str):
+        '''get everything or just one col - calling from SQL is faster than me structuring them up into DF'''
         table = 'test.' + table
-        self.cur.execute(f"SELECT * FROM {table};")
-        
+        if col == None:
+            self.cur.execute(f"SELECT * FROM {table};")
+        else:
+            self.cur.execute(f"SELECT {col} FROM {table};")
         out = pd.DataFrame()   
         out = [val for val in self.cur]
         return out
@@ -51,14 +53,14 @@ if __name__ == "__main__":
     table = 'courses'
     from_col = 'name'
     val_from_col = 'ENGLISH_0'
-    # out= sql_con.get(table,get_cols,from_col,val_from_col)
-    out = sql_con.get(table)
+    out= sql_con.get_where_specified(table,get_cols,from_col,val_from_col)
+    # out = sql_con.get(table,None)
     st.write(out)
 
-    to_cols = ['name','teacher','student']
-    to_vals = ['MATH_0','Erly','STUDENT_0']
-    sql_con.insert(table,to_cols,to_vals)
-    st.write(sql_con.get(table))
+    # to_cols = ['name','teacher','student']
+    # to_vals = ['MATH_0','Erly','STUDENT_0']
+    # sql_con.insert(table,to_cols,to_vals)
+    # st.write(sql_con.get(table))
 
 # st.write(cur.execute("SHOW TABLES"))
 
