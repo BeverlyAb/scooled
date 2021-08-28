@@ -27,10 +27,15 @@ class Assignments:
 
         self.load_from_db(assign,['*'])
         vals = st.session_state[pt.submit][0]
-    
-        self.group_by_type(vals[3:])
+        df = self.group_by_type(vals[2:])
+        st.write(df)
 
-        # cols = self.get_cols_from_db()
+        if st.sidebar.button('Return to Courses'):
+            self.reset_pg(pt.teacher)
+
+
+    def get_cols_from_db(self):
+                # cols = self.get_cols_from_db()
         # d = {}
         # for val, col in zip(vals, cols):
         #     d[col] = val
@@ -38,11 +43,6 @@ class Assignments:
         # df=pd.DataFrame(d,index=[0]).transpose()
         # # df.index = np.arange(1, len(df)+1)
         # st.write(df)
-        # if st.sidebar.button('Return to Courses'):
-        #     self.reset_pg(pt.teacher)
-
-
-    def get_cols_from_db(self):
         self.sql_con.query(f"SHOW COLUMNS FROM test.{self.table}")
         cols = st.session_state[pt.submit]
         column_name = [col[0] for col in cols]
@@ -55,11 +55,13 @@ class Assignments:
         q3 = []
         q4 = []
         q_bank = [q1,q2,q3,q4]
-        for i in range (len(vals) // group_len + 1):
-            q_bank[i] = [[vals[group_len*i:group_len*(i+1)]]]
-
-        st.write(q_bank)
-            
+        for i in range (len(vals) // group_len):
+            q_bank[i].extend(vals[group_len*i:group_len*(i+1)])
+        
+        df = pd.DataFrame(q_bank)
+        df.index = np.arange(1, len(df)+1)
+        df.columns = ['Question','Option 1','Option 2','Option 3','Answer']
+        return df
 
     def load_from_db(self, assign, col :list):
         ''' updates st.session_state[pt.submit]'''
