@@ -22,8 +22,15 @@ class Assignments:
         st.sidebar.title('Menu')
         assign = self.assignment.columns[0]
         st.title(assign)
-        df = self.view_assign(assign)
-        st.write(df) 
+        # df = self.view_assign(assign)
+        self.load_from_db(assign,['*'])
+        df = st.session_state[pt.submit]
+        self.sql_con.query(f"SHOW COLUMNS FROM test.{self.table}")
+        col = st.session_state[pt.submit]
+        st.write(df)
+        st.write(col)
+        st.stop()
+
 
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
