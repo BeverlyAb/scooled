@@ -23,7 +23,7 @@ class SQLConnector():
         '''get certain col(s) based on certain col value'''
         table = 'test.' + table
         self.cur.execute(f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} in ('{val_from_col}');")
-        
+
         out = pd.Series()   
         out = [val for val in self.cur]
         return out
@@ -31,12 +31,10 @@ class SQLConnector():
     def get(self,table : str, col : str):
         '''get everything or just one col - calling from SQL is faster than me structuring them up into DF'''
         table = 'test.' + table
-        if col == None:
-            self.cur.execute(f"SELECT * FROM {table};")
-        else:
-            self.cur.execute(f"SELECT {col} FROM {table};")
+        self.cur.execute(f"SELECT {','.join(col)} FROM {table};")
         out = pd.DataFrame()   
         out = [val for val in self.cur]
+        st.write(f"SELECT {','.join(col)} FROM {table};")
         return out
 
     def insert(self, table : str, to_cols : list, to_vals : list):

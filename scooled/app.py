@@ -26,8 +26,6 @@ if __name__ == "__main__":
         
         course = teacher.display(courses)
         assignment = teacher.assignments(course,assignment_table)
-        st.write(st.session_state[pt.bank].get_bank(),st.session_state[pt.bank])
-
     # Edit Page
     elif st.session_state[pt.edit_pg]:
         cur_assign = Assignments()
@@ -46,6 +44,4 @@ if __name__ == "__main__":
             exam_name = st.session_state[pt.submit][0]
             assign = st.session_state[pt.submit][1]
             st.session_state[pt.bank].add(exam_name,assign)
-            
-        st.write(len(st.session_state[pt.bank].get_bank()),st.session_state[pt.bank])
-            
+  

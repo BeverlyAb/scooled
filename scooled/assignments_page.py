@@ -4,6 +4,7 @@ import streamlit as st
 from structs import PageType as pt
 import pandas as pd
 from sql_connector import SQLConnector
+import re
 
 class Assignments:
 
@@ -12,15 +13,22 @@ class Assignments:
         # if st.session_state[pt.submit] not in st.session_state:
         #     st.session_state[pt.submit] = False
         self.sql_con = SQLConnector()
+        self.table = 'assignments'
         
 
     def display(self):
         st.sidebar.title('Menu')
-        st.title(self.assignment.columns[0])
-
+        course = self.assignment.columns[0]
+        st.title(course)
+        st.write(self.load_from_db(course))
         if st.sidebar.button('Return to Courses'):
             self.reset_pg(pt.teacher)
 
+    def load_from_db(self, course):
+        self.sql_con.get_where_specified(table=self.table,get_cols=['*'],from_col='course_name',val_from_col=course)
+        st.write(self.sql_con.get(table=self.table,col=['*']))
+        st.write(self.sql_con.query('SHOW COLUMNS FROM test.assignments'))
+    
     def create_new_pg(self):
         st.sidebar.title('Menu')
         exam_name = self.assignment.columns[0]
@@ -33,7 +41,8 @@ class Assignments:
         if st.button('Submit'):
             self.write_to_db(ques_bank,exam_name)               # add to db
             self.reset_forms()                                  # clear forms
-            self.reset_pg(pt.teacher)                           # go back to teacher pg
+            st.success(f'Your assignment, {exam_name}, was saved!')
+            # self.reset_pg(pt.teacher)                           # go back to teacher pg
         if st.sidebar.button('Return to Courses'):
             self.reset_forms()                                  # clear forms
             self.reset_pg(pt.teacher)                           # go back to teacher pg
@@ -52,7 +61,7 @@ class Assignments:
                     to_vals.append(opt)
                 to_vals.append(str(ans))
 
-        self.sql_con.insert(table='assignments',to_cols=to_cols,to_vals=to_vals)
+        self.sql_con.insert(table=self.table,to_cols=to_cols,to_vals=to_vals)
         # st.write(self.sql_con.get(table='assignments',col=None))
 
     def get_bank_from_forms(self,exam_name,set_ques_len,set_ans_len):
