@@ -47,7 +47,7 @@ class SQLConnector():
                 query += f" AND {from_col[i]} = {val_from_col[i]}"
             else:
                 query += f" AND {from_col[i]} = '{val_from_col[i]}'"
-        st.write(query)
+        # st.write(query)
         self.query(query)
 
     def get(self,table : str, col : list):

@@ -45,12 +45,13 @@ class Teacher:
         from_col=['assign_name']
         dtype_from_col=['str']
         table = 'test.general_course'
-        exam_len = 4
+        self.sql_con.query(f"SELECT COUNT(DISTINCT assign_name) FROM test.general_course WHERE (assign_name) LIKE'{assign.split('_')[0]}%';")
+        exam_len = st.session_state[pt.submit][0][0] 
+        st.write(exam_len)
         val_from_col = []
         for i in range(exam_len):
             val_from_col.append(assign+"_"+str(i))
         val_from_col = [val_from_col]
-        st.write(val_from_col[0][1])
     
         for i in range(exam_len):
             self.sql_con.get_where_specified(table=table,get_cols=get_cols,from_col=from_col,val_from_col=[val_from_col[0][i]],dtype_from_col=dtype_from_col)
@@ -58,34 +59,30 @@ class Teacher:
                 q = st.session_state[pt.submit][0]
                 q = [val for val in q]
                 df.loc[i] = q 
-        df = df[1:]
         return df
 
     def assignments(self,course,assignment_table)->None:
-        # course_display = assignment_table.filter([course,course+'_description'], axis=1)
-        assignments = assignment_table[course]
+        # course_display = assignment_table.filter([course,course+'_description'], axis=1)]
         # keep track of the assignment description in case user want to edit
+        df = self.get_courses(self.course)
+        st.write(df)
+        assignments = df['Assignment']#assignment_table[course
         assignment = st.selectbox(label='Assignment',options=assignments)
-        st.write(self.get_courses(self.course))
-        # st.write(self.get_courses(assignment))
-
-        st.stop()
+      
         col0, col1 = st.columns(2)
         with col0:
-            # description = course+'_description'+ assignment.split(sep='_')[1]
-            # assignment_table[course+'_description'][int(assignment.split(sep='_')[1])]
             if st.button(label='View '+ assignment,key='view'):
-                desc = pd.Series(course_display[course+'_description'][int(assignment.split(sep='_')[1])],name=assignment)
-                st.session_state[pt.assign] = pd.DataFrame(desc)
+                # desc = pd.Series(course_display[course+'_description'][int(assignment.split(sep='_')[1])],name=assignment)
+                st.session_state[pt.assign] = assignment
                 self.edit_assign()#course_display[course+'_description'][int(assignment.split(sep='_')[1])])
 
         with col1:
             if st.button(label='Add new assignment',key='new'):
                 # create a new assignment name
-                next_num = len(course_display)
-                assignment = assignment.replace(assignment.split(sep='_')[1],"")+str(next_num)
-                desc = pd.Series([0],name=assignment)
-                st.session_state[pt.assign] = pd.DataFrame(desc)
+                # next_num = len(course_display)
+                # assignment = assignment.replace(assignment.split(sep='_')[1],"")+str(next_num)
+                # desc = pd.Series([0],name=assignment)
+                # st.session_state[pt.assign] = assignment
                 self.new_assign()
         
     def edit_assign(self):#,assignment):

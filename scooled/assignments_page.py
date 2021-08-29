@@ -29,7 +29,7 @@ class Assignments:
 
     def display(self):
         st.sidebar.title('Menu')
-        assign_name = self.assignment.columns[0]
+        assign_name = self.assignment#.columns[0]
         st.title('Assignment Overview')
         st.sidebar.write(f"These are your content for {assign_name}.")
         
@@ -50,7 +50,7 @@ class Assignments:
             self.reset_pg(pt.teacher)
 
     def get_feedback(self):
-        assign =  self.assignment.columns[0]
+        assign =  self.assignment#.columns[0]
         fb = pd.DataFrame([["",""]] , columns = ["Student","Feedback"])
         get_cols = ['student','feedback']
         from_col=['question_num','assign_name']
@@ -80,7 +80,7 @@ class Assignments:
 
 
     def update_note_df(self):
-        assign = self.assignment.columns[0]
+        assign = self.assignment#.columns[0]
         notes = pd.DataFrame([[""]] , columns = [""])
         get_cols = ['note']
         from_col=['question_num','assign_name']
@@ -99,7 +99,7 @@ class Assignments:
 
 
     def update_q_df(self):
-        assign = self.assignment.columns[0]
+        assign = self.assignment#.columns[0]
         q_bank = pd.DataFrame([["","","","",""]] , columns = ["Question", "Answer", "Option 1", "Option 2", "Option 3"])
         
         get_cols=['question','answer','opt1','opt2','opt3']
