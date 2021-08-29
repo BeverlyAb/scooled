@@ -22,18 +22,17 @@ class Assignments:
 
     def display(self):
         st.sidebar.title('Menu')
-        assign = self.assignment.columns[0]
+        assign_name = self.assignment.columns[0]
         st.title('Assignment Overview')
+        st.sidebar.write(f"These are your content for {assign_name}")
 
-        notes, vals = self.split_notes_and_questions(assign)
-        assign_name = vals[0]
+        notes, vals = self.split_notes_and_questions(assign_name)
 
         if vals != None:
             df = self.group_by_type(vals[2:])
             st.subheader(assign_name)
             st.table(df)
         st.stop()
-
         self.view_notes(notes)
         self.edit_notes(df,assign_name)
         if st.sidebar.button('Back to Courses'):
@@ -55,36 +54,40 @@ class Assignments:
 
     def view_notes(self,notes : tuple):
         with st.expander(label='Feedback'):
-            for note in notes:
-                st.write(note)
+            if len(notes) == 0:
+                for note in notes:
+                    st.write(note)
+            st.write("Nothing yet!")
 
     def edit_notes(self,df,assign_name):
         if st.checkbox(label='Edit Feedback Notes'):
             with st.form('Note Edit'):   
                 q = st.selectbox(label='Edit notes for which question?',options=range(1,self.set_ques_len+1))
                 note = st.text_input('Write text or link to a website or image!')
-                corr_q = df['Question'][q]
-                q = 'q'+str(q)
+
                 if st.form_submit_button('OK'):
-                    query = f"UPDATE {self.table} SET Notes = '{note}' WHERE assign_name = '{assign_name}' AND {q} = '{corr_q}';"
+                    query = f"UPDATE {self.table} SET note = '{note}' WHERE assign_name = '{assign_name}' AND 'question_num' = '{q}';"
+                    st.write(query)
                     self.sql_con.query(query)
                     st.success(f"Updated notes for {q}")
 
     def split_notes_and_questions(self,assign):
-        self.load_from_db(assign,['*'])
-        if len(st.session_state[pt.submit]) > 0:
-            everything = st.session_state[pt.submit][0]
+        notes = None
+        q_bank = None
 
-            self.load_from_db(assign,['note'])#,'q1','q2','q3','q4'])
-            if len(st.session_state[pt.submit]) > 0:
-                notes = st.session_state[pt.submit][0]
-                q_bank = [val for val in everything if val not in notes]
-                return notes, q_bank
+        for i in range(1,self.set_ques_len+1):
+            self.sql_con.get_where_specified(table=self.table,get_cols=['course_name','question','answer','opt1','opt2','opt3'],from_col=['question_num'],val_from_col=[str(i)])
+            
+            if st.session_state[pt.submit] != None:
+                everything = st.session_state[pt.submit][0]
+                st.write(everything)
+            #     self.load_from_db(assign,['note'])#,'q1','q2','q3','q4'])
+            #     while len(st.session_state[pt.submit]) > 0:
+            #         notes = st.session_state[pt.submit][0]
+            #         q_bank = [val for val in everything if val not in notes]
+        return notes, q_bank
 
-            else: 
-                return None
-        else:
-            return None
+
 
     def group_by_type(self,vals):
         group_len = self.set_ques_len + 1 # question + ans
@@ -95,7 +98,8 @@ class Assignments:
         q_bank = [q1,q2,q3,q4]
         for i in range (len(vals) // group_len):
             q_bank[i].extend(vals[group_len*i:group_len*(i+1)])
-        
+        st.write(q_bank)
+        st.stop()
         df = pd.DataFrame(q_bank)
         df.index = np.arange(1, len(df)+1)
         df.columns = ['Question','Option 1','Option 2','Option 3','Answer']

@@ -35,7 +35,7 @@ class SQLConnector():
         self.conn.close()
         return None
 
-    def get_where_specified(self,table : str, get_cols : list, from_col : str, val_from_col : str ):
+    def get_where_specified(self,table : str, get_cols : list, from_col : list, val_from_col : list ):
         '''get certain col(s) based on certain col value'''
         # self.cur = self.conn.cursor()
         # table = 'test.' + table
@@ -45,7 +45,9 @@ class SQLConnector():
         # self.cur.close()
 
         # return out
-        query = f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} in ('{val_from_col}');"
+        # val_from_col = ["'" + val + "'" for val in val_from_col]
+        query = f"SELECT {','.join(get_cols)} FROM {table} WHERE {','.join(from_col)} = ({','.join(val_from_col)});"
+        st.write(query)
         self.query(query)
 
     def get(self,table : str, col : list):
