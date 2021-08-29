@@ -26,16 +26,14 @@ class Assignments:
         st.title('Assignment Overview')
         st.sidebar.write(f"These are your content for {assign_name}")
 
-        notes, vals = self.split_notes_and_questions(assign_name)
+        df= self.get_question(assign_name)
         
+        st.subheader(assign_name)
+        st.table(df)
+        st.table(self.get_notes(assign_name))
         st.stop()
-        if vals != None:
-            df = self.group_by_type(vals[2:])
-            st.subheader(assign_name)
-            st.table(df)
-
-        self.view_notes(notes)
-        self.edit_notes(df,assign_name)
+        self.view_notes()
+        self.edit_notes(assign_name)
         if st.sidebar.button('Back to Courses'):
             self.reset_pg(pt.teacher)
 
@@ -60,7 +58,7 @@ class Assignments:
                     st.write(note)
             st.write("Nothing yet!")
 
-    def edit_notes(self,df,assign_name):
+    def edit_notes(self,assign_name):
         if st.checkbox(label='Edit Feedback Notes'):
             with st.form('Note Edit'):   
                 q = st.selectbox(label='Edit notes for which question?',options=range(1,self.set_ques_len+1))
@@ -72,18 +70,37 @@ class Assignments:
                     self.sql_con.query(query)
                     st.success(f"Updated notes for {q}")
 
-    def split_notes_and_questions(self,assign):
-        notes = pd.DataFrame
-        q_bank = pd.DataFrame([["","","","",""]] , columns = ["Question", "Answer", "Option 1", "Option 2", "Option 3"])
+    def get_notes(self,assign):
+        notes = pd.DataFrame([[""]] , columns = ["Notes"])
+        get_cols = ['note']
+        from_col=['question_num','assign_name']
+        dtype_from_col=['int','str']
+
         for i in range(1,self.set_ques_len+1):
-            self.sql_con.get_where_specified(table=self.table,get_cols=['question','answer','opt1','opt2','opt3'],from_col=['question_num','assign_name'],val_from_col=[str(i),assign],dtype_from_col=['int','str'])
+            self.sql_con.get_where_specified(table=self.table,get_cols=get_cols,from_col=from_col,val_from_col=[str(i),assign],dtype_from_col=dtype_from_col)
+            if st.session_state[pt.submit] != None:
+                q = st.session_state[pt.submit][0]
+                q = [val for val in q]
+                notes.loc[i] = q 
+        notes = notes[1:]
+        return notes
+
+    def get_question(self,assign):
+        q_bank = pd.DataFrame([["","","","",""]] , columns = ["Question", "Answer", "Option 1", "Option 2", "Option 3"])
+        
+        get_cols=['question','answer','opt1','opt2','opt3']
+        from_col=['question_num','assign_name']
+        dtype_from_col=['int','str']
+        
+        for i in range(1,self.set_ques_len+1):
+            self.sql_con.get_where_specified(table=self.table,get_cols=get_cols,from_col=from_col,val_from_col=[str(i),assign],dtype_from_col=dtype_from_col)
             
             if st.session_state[pt.submit] != None:
                 q = st.session_state[pt.submit][0]
                 q = [val for val in q]
                 q_bank.loc[i] = q 
         q_bank = q_bank[1:]
-        return notes, q_bank
+        return q_bank
 
 
 
