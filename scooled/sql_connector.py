@@ -35,19 +35,18 @@ class SQLConnector():
         self.conn.close()
         return None
 
-    def get_where_specified(self,table : str, get_cols : list, from_col : list, val_from_col : list ):
+    def get_where_specified(self,table : str, get_cols : list, from_col : list, val_from_col : list, dtype_from_col:list):
         '''get certain col(s) based on certain col value'''
-        # self.cur = self.conn.cursor()
-        # table = 'test.' + table
-        # self.cur.execute(f"SELECT {','.join(get_cols)} FROM {table} WHERE {from_col} = ('{val_from_col}');")
-        # out = pd.Series()   
-        # out = [val for val in self.cur]
-        # self.cur.close()
-
-        # return out
-        # val_from_col = ["'" + val + "'" for val in val_from_col]
-        query = f"SELECT {','.join(get_cols)} FROM {table} WHERE {','.join(from_col)} = ({','.join(val_from_col)});"
-        st.write(query)
+        query = f"SELECT {','.join(get_cols)} FROM {table}"
+        if dtype_from_col[0] == 'int':
+            query += f" WHERE {from_col[0]} = {val_from_col[0]}"
+        else:
+            query += f" WHERE {from_col[0]} = '{val_from_col[0]}'"
+        for i in range(1,len(from_col)):
+            if dtype_from_col[i] == 'int':
+                query += f" AND {from_col[i]} = {val_from_col[i]}"
+            else:
+                query += f" AND {from_col[i]} = '{val_from_col[i]}'"
         self.query(query)
 
     def get(self,table : str, col : list):

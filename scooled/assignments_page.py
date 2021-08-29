@@ -76,7 +76,7 @@ class Assignments:
         q_bank = None
 
         for i in range(1,self.set_ques_len+1):
-            self.sql_con.get_where_specified(table=self.table,get_cols=['course_name','question','answer','opt1','opt2','opt3'],from_col=['question_num'],val_from_col=[str(i)])
+            self.sql_con.get_where_specified(table=self.table,get_cols=['course_name','question','answer','opt1','opt2','opt3'],from_col=['question_num','assign_name'],val_from_col=[str(i),assign],dtype_from_col=['int','str'])
             
             if st.session_state[pt.submit] != None:
                 everything = st.session_state[pt.submit][0]
