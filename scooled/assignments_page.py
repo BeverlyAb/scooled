@@ -31,7 +31,7 @@ class Assignments:
         st.sidebar.title('Menu')
         assign_name = self.assignment.columns[0]
         st.title('Assignment Overview')
-        st.sidebar.write(f"These are your content for {assign_name}")
+        st.sidebar.write(f"These are your content for {assign_name}.")
         
 
         
@@ -138,7 +138,7 @@ class Assignments:
             self.reset_pg(pt.teacher)                           # go back to teacher pg
 
     def write_to_db(self, ques_bank : dict,exam_name):
-        to_cols = ["assign_name","course_name","question","question_num","answer","opt1","opt2","opt3"]
+        to_cols = ["assign_name","course_name","question","question_num","answer","note","opt1","opt2","opt3"]
         course_name = str(exam_name.split(sep='_')[0])
 
         for i in reversed(range(self.set_ques_len)):
@@ -149,11 +149,11 @@ class Assignments:
             ans_set = grouped_val[1]
             answer = [ans for ans in ans_set.keys()][0]
             opts = [opt for opt in ans_set.values()][0]
+            note = "No note yet, but if there was it will help answer this question."
         
         
-            to_vals.extend([question,question_num,answer])
+            to_vals.extend([question,question_num,answer,note])
             to_vals.extend(opts)
-            st.write(to_vals)
             self.sql_con.insert(table=self.table,to_cols=to_cols,to_vals=to_vals)
         else:
             st.success(f'Your assignment, {exam_name}, was saved!')
