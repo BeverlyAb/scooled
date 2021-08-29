@@ -20,25 +20,31 @@ class Assignments:
         self.set_opt_len = 3
         
 
-    def display(self):
+
+    
+    # @st.cache(hash_funcs={pd.DataFrame: lambda x: st.session_state[pt.assign]})
+    def cache_df(self,df :pd.DataFrame):
+        ''' Caching isn't working since it traces that the df comes from a conn'''
+        return df
+
+    def display(self, q_df, note_df):
         st.sidebar.title('Menu')
         assign_name = self.assignment.columns[0]
         st.title('Assignment Overview')
         st.sidebar.write(f"These are your content for {assign_name}")
 
-        df= self.get_question(assign_name)
         # display question, notes and add notes
-
         st.subheader(assign_name)
-        st.table(df)
-        st.table(self.get_notes(assign_name))
+        st.table(self.cache_df(q_df))
+        st.table(self.cache_df(note_df))
 
         self.edit_notes(assign_name)
         if st.sidebar.button('Back to Courses'):
             self.reset_pg(pt.teacher)
 
+
     def edit_notes(self,assign_name):
-        if st.checkbox(label='Edit Feedback Notes'):
+        if st.sidebar.button(label='Edit Feedback Notes'):
             with st.form('Note Edit'):   
                 q = st.selectbox(label='Edit notes for which question?',options=range(1,self.set_ques_len+1))
                 note = st.text_input('Write text or link to a website or image!')
@@ -49,7 +55,9 @@ class Assignments:
                     self.sql_con.query(query)
                     st.success(f"Updated notes for {q}")
 
-    def get_notes(self,assign):
+
+    def get_notes(self):
+        assign = self.assignment.columns[0]
         notes = pd.DataFrame([[""]] , columns = ["Notes"])
         get_cols = ['note']
         from_col=['question_num','assign_name']
@@ -64,7 +72,9 @@ class Assignments:
         notes = notes[1:]
         return notes
 
-    def get_question(self,assign):
+
+    def get_question(self):
+        assign = self.assignment.columns[0]
         q_bank = pd.DataFrame([["","","","",""]] , columns = ["Question", "Answer", "Option 1", "Option 2", "Option 3"])
         
         get_cols=['question','answer','opt1','opt2','opt3']
@@ -81,22 +91,6 @@ class Assignments:
         q_bank = q_bank[1:]
         return q_bank
 
-
-
-    def group_by_type(self,vals):
-        group_len = self.set_ques_len + 1 # question + ans
-        q1 = []
-        q2 = []
-        q3 = []
-        q4 = []
-        q_bank = [q1,q2,q3,q4]
-        for i in range (len(vals) // group_len):
-            q_bank[i].extend(vals[group_len*i:group_len*(i+1)])
-        st.write(q_bank)
-        df = pd.DataFrame(q_bank)
-        df.index = np.arange(1, len(df)+1)
-        df.columns = ['Question','Option 1','Option 2','Option 3','Answer']
-        return df
 
     def load_from_db(self, assign, col :list):
         ''' updates st.session_state[pt.submit]'''
@@ -196,5 +190,19 @@ class Assignments:
     #                 st.write(note)
     #         st.write("Nothing yet!")
 
+    # def group_by_type(self,vals):
+    #     group_len = self.set_ques_len + 1 # question + ans
+    #     q1 = []
+    #     q2 = []
+    #     q3 = []
+    #     q4 = []
+    #     q_bank = [q1,q2,q3,q4]
+    #     for i in range (len(vals) // group_len):
+    #         q_bank[i].extend(vals[group_len*i:group_len*(i+1)])
+    #     st.write(q_bank)
+    #     df = pd.DataFrame(q_bank)
+    #     df.index = np.arange(1, len(df)+1)
+    #     df.columns = ['Question','Option 1','Option 2','Option 3','Answer']
+    #     return df
         
  
