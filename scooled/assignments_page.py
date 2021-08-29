@@ -27,36 +27,15 @@ class Assignments:
         st.sidebar.write(f"These are your content for {assign_name}")
 
         df= self.get_question(assign_name)
-        
+        # display question, notes and add notes
+
         st.subheader(assign_name)
         st.table(df)
         st.table(self.get_notes(assign_name))
-        st.stop()
-        self.view_notes()
+
         self.edit_notes(assign_name)
         if st.sidebar.button('Back to Courses'):
             self.reset_pg(pt.teacher)
-
-    def get_cols_from_db(self):
-                # cols = self.get_cols_from_db()
-        # d = {}
-        # for val, col in zip(vals, cols):
-        #     d[col] = val
-
-        # df=pd.DataFrame(d,index=[0]).transpose()
-        # # df.index = np.arange(1, len(df)+1)
-        # st.write(df)
-        self.sql_con.query(f"SHOW COLUMNS FROM {self.table}")
-        cols = st.session_state[pt.submit]
-        column_name = [col[0] for col in cols]
-        return column_name[:-1] #exclude rowindex
-
-    def view_notes(self,notes : tuple):
-        with st.expander(label='Feedback'):
-            if len(notes) == 0:
-                for note in notes:
-                    st.write(note)
-            st.write("Nothing yet!")
 
     def edit_notes(self,assign_name):
         if st.checkbox(label='Edit Feedback Notes'):
@@ -65,7 +44,7 @@ class Assignments:
                 note = st.text_input('Write text or link to a website or image!')
 
                 if st.form_submit_button('OK'):
-                    query = f"UPDATE {self.table} SET note = '{note}' WHERE assign_name = '{assign_name}' AND 'question_num' = '{q}';"
+                    query = f"UPDATE {self.table} SET note = '{note}' WHERE assign_name = '{assign_name}' AND question_num = {q};"
                     st.write(query)
                     self.sql_con.query(query)
                     st.success(f"Updated notes for {q}")
@@ -114,7 +93,6 @@ class Assignments:
         for i in range (len(vals) // group_len):
             q_bank[i].extend(vals[group_len*i:group_len*(i+1)])
         st.write(q_bank)
-        st.stop()
         df = pd.DataFrame(q_bank)
         df.index = np.arange(1, len(df)+1)
         df.columns = ['Question','Option 1','Option 2','Option 3','Answer']
@@ -187,12 +165,36 @@ class Assignments:
         for val in filter(lambda x: x not in non_form_states, st.session_state):
             del st.session_state[val] 
 
-    def reset_pg(self, go_to):
-        is_bool = lambda x : type(st.session_state[x]) == bool   
-        for val in filter(is_bool, st.session_state):
-            if val == go_to:
-            #     st.session_state[val] = False
-            # else:
-                st.session_state[val] = True
+    # def reset_pg(self, go_to):
+    #     is_bool = lambda x : type(st.session_state[x]) == bool   
+    #     for val in filter(is_bool, st.session_state):
+    #         if val == go_to:
+    #         #     st.session_state[val] = False
+    #         # else:
+    #             st.session_state[val] = True
+
+
+
+    # def get_cols_from_db(self):
+    #             # cols = self.get_cols_from_db()
+    #     # d = {}
+    #     # for val, col in zip(vals, cols):
+    #     #     d[col] = val
+
+    #     # df=pd.DataFrame(d,index=[0]).transpose()
+    #     # # df.index = np.arange(1, len(df)+1)
+    #     # st.write(df)
+    #     self.sql_con.query(f"SHOW COLUMNS FROM {self.table}")
+    #     cols = st.session_state[pt.submit]
+    #     column_name = [col[0] for col in cols]
+    #     return column_name[:-1] #exclude rowindex
+
+    # def view_notes(self,notes : tuple):
+    #     with st.expander(label='Feedback'):
+    #         if len(notes) == 0:
+    #             for note in notes:
+    #                 st.write(note)
+    #         st.write("Nothing yet!")
+
         
  
