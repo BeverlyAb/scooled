@@ -29,9 +29,7 @@ if __name__ == "__main__":
     # Edit Page
     elif st.session_state[pt.edit_pg]:
         cur_assign = Assignments()
-        q_df = cur_assign.get_question()
-        note_df = cur_assign.get_notes()
-        cur_assign.display(q_df,note_df)
+        cur_assign.display()
 
     # New Page
     elif st.session_state[pt.new_pg]:

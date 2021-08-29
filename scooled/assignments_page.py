@@ -27,33 +27,39 @@ class Assignments:
         ''' Caching isn't working since it traces that the df comes from a conn'''
         return df
 
-    def display(self, q_df, note_df):
+    def display(self):
         st.sidebar.title('Menu')
         assign_name = self.assignment.columns[0]
         st.title('Assignment Overview')
         st.sidebar.write(f"These are your content for {assign_name}")
-
+        # get df
+        q_df = self.get_question()
+        note_df = self.get_notes()
+        
         # display question, notes and add notes
         st.subheader(assign_name)
-        st.table(self.cache_df(q_df))
-        st.table(self.cache_df(note_df))
+        with st.expander(label=f'Questions'):
+            st.table(q_df)
+        with st.expander(label=f'Notes'):
+            st.table(note_df)
 
-        self.edit_notes(assign_name)
+        with st.expander(label='Edit Notes'):
+            self.edit_notes(assign_name)
         if st.sidebar.button('Back to Courses'):
             self.reset_pg(pt.teacher)
 
 
     def edit_notes(self,assign_name):
-        if st.sidebar.button(label='Edit Feedback Notes'):
-            with st.form('Note Edit'):   
-                q = st.selectbox(label='Edit notes for which question?',options=range(1,self.set_ques_len+1))
-                note = st.text_input('Write text or link to a website or image!')
+        
+        with st.form('Note Edit'):   
+            q = st.selectbox(label='Edit notes for which question?',options=range(1,self.set_ques_len+1))
+            note = st.text_input('Write text or link to a website or image!')
 
-                if st.form_submit_button('OK'):
-                    query = f"UPDATE {self.table} SET note = '{note}' WHERE assign_name = '{assign_name}' AND question_num = {q};"
-                    st.write(query)
-                    self.sql_con.query(query)
-                    st.success(f"Updated notes for {q}")
+            if st.form_submit_button('OK'):
+                query = f"UPDATE {self.table} SET note = '{note}' WHERE assign_name = '{assign_name}' AND question_num = {q};"
+                self.sql_con.query(query)
+                st.success(f"Updated notes for {q}")
+                
 
 
     def get_notes(self):
