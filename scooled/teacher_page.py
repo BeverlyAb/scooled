@@ -6,6 +6,8 @@ import random
 import itertools
 from structs import PageType as pt
 from question_bank import QuestionBank
+from sql_connector import SQLConnector
+
 
 class Teacher:
     
@@ -27,22 +29,47 @@ class Teacher:
         if bank not in st.session_state:
             st.session_state[pt.bank] = QuestionBank()
 
+        self.sql_con = SQLConnector()
+        self.course = ""
+
     def display(self, courses)->None:
         st.title("s'CoolEd")
         st.sidebar.title(f"{self.name}'s Subjects")
-        course = st.sidebar.selectbox(label='Subjects',options=courses)
-        st.write(f'{course} Assignments')
-        return course
+        self.course = st.sidebar.selectbox(label='Subjects',options=courses)
+        st.write(f'{self.course} Assignments')
+        return self.course
 
+    def get_courses(self,assign):
+        df = pd.DataFrame([["","","","",""]] , columns = ["Assignment","Description","# of Perfect Scores","# of Retries","Time of Last Retry"])
+        get_cols = ['assign_name','topic','num_full_grade','retries','time']
+        from_col=['assign_name']
+        dtype_from_col=['str']
+        table = 'test.general_course'
+        exam_len = 4
+        val_from_col = []
+        for i in range(exam_len):
+            val_from_col.append(assign+"_"+str(i))
+        val_from_col = [val_from_col]
+        st.write(val_from_col[0][1])
+    
+        for i in range(exam_len):
+            self.sql_con.get_where_specified(table=table,get_cols=get_cols,from_col=from_col,val_from_col=[val_from_col[0][i]],dtype_from_col=dtype_from_col)
+            if st.session_state[pt.submit] != None and len(st.session_state[pt.submit]) > 0:
+                q = st.session_state[pt.submit][0]
+                q = [val for val in q]
+                df.loc[i] = q 
+        df = df[1:]
+        return df
 
     def assignments(self,course,assignment_table)->None:
-        course_display = assignment_table.filter([course,course+'_description'], axis=1)
+        # course_display = assignment_table.filter([course,course+'_description'], axis=1)
         assignments = assignment_table[course]
-        st.write(course_display)
-
         # keep track of the assignment description in case user want to edit
         assignment = st.selectbox(label='Assignment',options=assignments)
+        st.write(self.get_courses(self.course))
+        # st.write(self.get_courses(assignment))
 
+        st.stop()
         col0, col1 = st.columns(2)
         with col0:
             # description = course+'_description'+ assignment.split(sep='_')[1]
