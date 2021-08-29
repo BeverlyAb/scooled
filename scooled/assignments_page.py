@@ -24,14 +24,15 @@ class Assignments:
         st.sidebar.title('Menu')
         assign = self.assignment.columns[0]
         st.title('Assignment Overview')
-        st.write(assign)
-        st.stop()
+
         notes, vals = self.split_notes_and_questions(assign)
         assign_name = vals[0]
+
         if vals != None:
             df = self.group_by_type(vals[2:])
             st.subheader(assign_name)
             st.table(df)
+        st.stop()
 
         self.view_notes(notes)
         self.edit_notes(df,assign_name)
@@ -74,7 +75,7 @@ class Assignments:
         if len(st.session_state[pt.submit]) > 0:
             everything = st.session_state[pt.submit][0]
 
-            self.load_from_db(assign,['Notes'])#,'q1','q2','q3','q4'])
+            self.load_from_db(assign,['note'])#,'q1','q2','q3','q4'])
             if len(st.session_state[pt.submit]) > 0:
                 notes = st.session_state[pt.submit][0]
                 q_bank = [val for val in everything if val not in notes]
