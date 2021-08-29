@@ -107,10 +107,8 @@ class Assignments:
     
     def create_new_pg(self):
         st.sidebar.title('Menu')
-        exam_name = 'Math_1'#self.assignment.columns[0]
-        st.title(exam_name)
-
-        
+        st.title("New Assignment")
+        exam_name = st.text_input("Assignment Name")        
         ques_bank = self.get_bank_from_forms(exam_name,self.set_ques_len,self.set_opt_len)
 
         if st.button('Submit'):
