@@ -65,11 +65,13 @@ class Assignments:
 
         for i in range(1,self.set_ques_len+1):
             self.sql_con.get_where_specified(table=self.table,get_cols=get_cols,from_col=from_col,val_from_col=[str(i),assign],dtype_from_col=dtype_from_col)
-            if st.session_state[pt.submit] != None:
+            if st.session_state[pt.submit] != None and len(st.session_state[pt.submit]) > 0:
                 q = st.session_state[pt.submit][0]
                 q = [val for val in q]
                 notes.loc[i] = q 
         notes = notes[1:]
+
+        notes = notes.style.set_properties(**{'text-align': 'left'})
         return notes
 
 
@@ -84,7 +86,7 @@ class Assignments:
         for i in range(1,self.set_ques_len+1):
             self.sql_con.get_where_specified(table=self.table,get_cols=get_cols,from_col=from_col,val_from_col=[str(i),assign],dtype_from_col=dtype_from_col)
             
-            if st.session_state[pt.submit] != None:
+            if st.session_state[pt.submit] != None and len(st.session_state[pt.submit]) > 0:
                 q = st.session_state[pt.submit][0]
                 q = [val for val in q]
                 q_bank.loc[i] = q 
@@ -159,13 +161,13 @@ class Assignments:
         for val in filter(lambda x: x not in non_form_states, st.session_state):
             del st.session_state[val] 
 
-    # def reset_pg(self, go_to):
-    #     is_bool = lambda x : type(st.session_state[x]) == bool   
-    #     for val in filter(is_bool, st.session_state):
-    #         if val == go_to:
-    #         #     st.session_state[val] = False
-    #         # else:
-    #             st.session_state[val] = True
+    def reset_pg(self, go_to):
+        is_bool = lambda x : type(st.session_state[x]) == bool   
+        for val in filter(is_bool, st.session_state):
+            if val == go_to:
+            #     st.session_state[val] = False
+            # else:
+                st.session_state[val] = True
 
 
 
