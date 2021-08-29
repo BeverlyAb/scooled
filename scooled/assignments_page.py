@@ -18,8 +18,8 @@ class Assignments:
         self.table = 'test.question_bank'
         self.set_ques_len = 4
         self.set_opt_len = 3
-        
-
+        self.note_df = pd.DataFrame()
+        self.q_df = pd.DataFrame()
 
     
     # @st.cache(hash_funcs={pd.DataFrame: lambda x: st.session_state[pt.assign]})
@@ -32,16 +32,15 @@ class Assignments:
         assign_name = self.assignment.columns[0]
         st.title('Assignment Overview')
         st.sidebar.write(f"These are your content for {assign_name}")
-        # get df
-        q_df = self.get_question()
-        note_df = self.get_notes()
+        
+
         
         # display question, notes and add notes
         st.subheader(assign_name)
         with st.expander(label=f'Questions'):
-            st.table(q_df)
+            st.table(self.q_df)
         with st.expander(label=f'Notes'):
-            st.table(note_df)
+            st.table(self.note_df)
 
         with st.expander(label='Edit Notes'):
             self.edit_notes(assign_name)
@@ -50,21 +49,22 @@ class Assignments:
 
 
     def edit_notes(self,assign_name):
-        
+        "Cannot have quotes in input"
         with st.form('Note Edit'):   
             q = st.selectbox(label='Edit notes for which question?',options=range(1,self.set_ques_len+1))
-            note = st.text_input('Write text or link to a website or image!')
+            note = st.text_area('Write text or link to a website or image!')
 
             if st.form_submit_button('OK'):
                 query = f"UPDATE {self.table} SET note = '{note}' WHERE assign_name = '{assign_name}' AND question_num = {q};"
                 self.sql_con.query(query)
                 st.success(f"Updated notes for {q}")
+                self.update_note_df()
                 
 
 
-    def get_notes(self):
+    def update_note_df(self):
         assign = self.assignment.columns[0]
-        notes = pd.DataFrame([[""]] , columns = ["Notes"])
+        notes = pd.DataFrame([[""]] , columns = [""])
         get_cols = ['note']
         from_col=['question_num','assign_name']
         dtype_from_col=['int','str']
@@ -77,11 +77,11 @@ class Assignments:
                 notes.loc[i] = q 
         notes = notes[1:]
 
-        notes = notes.style.set_properties(**{'text-align': 'left'})
-        return notes
+        # notes = notes.style.set_properties(**{'text-align': 'left'})
+        self.note_df = notes
 
 
-    def get_question(self):
+    def update_q_df(self):
         assign = self.assignment.columns[0]
         q_bank = pd.DataFrame([["","","","",""]] , columns = ["Question", "Answer", "Option 1", "Option 2", "Option 3"])
         
@@ -97,7 +97,7 @@ class Assignments:
                 q = [val for val in q]
                 q_bank.loc[i] = q 
         q_bank = q_bank[1:]
-        return q_bank
+        self.q_df = q_bank
 
 
     def load_from_db(self, assign, col :list):
@@ -106,6 +106,7 @@ class Assignments:
 
     
     def create_new_pg(self):
+
         st.sidebar.title('Menu')
         st.title("New Assignment")
         exam_name = st.text_input("Assignment Name")        
