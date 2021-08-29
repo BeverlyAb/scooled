@@ -47,7 +47,6 @@ class Teacher:
         table = 'test.general_course'
         self.sql_con.query(f"SELECT COUNT(DISTINCT assign_name) FROM test.general_course WHERE (assign_name) LIKE'{assign.split('_')[0]}%';")
         exam_len = st.session_state[pt.submit][0][0] 
-        st.write(exam_len)
         val_from_col = []
         for i in range(exam_len):
             val_from_col.append(assign+"_"+str(i))
