@@ -27,12 +27,13 @@ class Assignments:
         st.sidebar.write(f"These are your content for {assign_name}")
 
         notes, vals = self.split_notes_and_questions(assign_name)
-
+        
+        st.stop()
         if vals != None:
             df = self.group_by_type(vals[2:])
             st.subheader(assign_name)
             st.table(df)
-        st.stop()
+
         self.view_notes(notes)
         self.edit_notes(df,assign_name)
         if st.sidebar.button('Back to Courses'):
@@ -72,19 +73,16 @@ class Assignments:
                     st.success(f"Updated notes for {q}")
 
     def split_notes_and_questions(self,assign):
-        notes = None
-        q_bank = None
-
+        notes = pd.DataFrame
+        q_bank = pd.DataFrame([["","","","",""]] , columns = ["Question", "Answer", "Option 1", "Option 2", "Option 3"])
         for i in range(1,self.set_ques_len+1):
-            self.sql_con.get_where_specified(table=self.table,get_cols=['course_name','question','answer','opt1','opt2','opt3'],from_col=['question_num','assign_name'],val_from_col=[str(i),assign],dtype_from_col=['int','str'])
+            self.sql_con.get_where_specified(table=self.table,get_cols=['question','answer','opt1','opt2','opt3'],from_col=['question_num','assign_name'],val_from_col=[str(i),assign],dtype_from_col=['int','str'])
             
             if st.session_state[pt.submit] != None:
-                everything = st.session_state[pt.submit][0]
-                st.write(everything)
-            #     self.load_from_db(assign,['note'])#,'q1','q2','q3','q4'])
-            #     while len(st.session_state[pt.submit]) > 0:
-            #         notes = st.session_state[pt.submit][0]
-            #         q_bank = [val for val in everything if val not in notes]
+                q = st.session_state[pt.submit][0]
+                q = [val for val in q]
+                q_bank.loc[i] = q 
+        q_bank = q_bank[1:]
         return notes, q_bank
 
 
