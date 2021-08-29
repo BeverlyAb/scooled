@@ -39,6 +39,8 @@ class Assignments:
         st.subheader(assign_name)
         with st.expander(label=f'Questions'):
             st.table(self.q_df)
+        with st.expander(label=f'Student Feedback'):
+            st.table(self.get_feedback())
         with st.expander(label=f'Notes'):
             st.table(self.note_df)
 
@@ -47,7 +49,22 @@ class Assignments:
         if st.sidebar.button('Back to Courses'):
             self.reset_pg(pt.teacher)
 
-
+    def get_feedback(self):
+        assign =  self.assignment.columns[0]
+        fb = pd.DataFrame([["",""]] , columns = ["Student","Feedback"])
+        get_cols = ['student','feedback']
+        from_col=['question_num','assign_name']
+        dtype_from_col=['int','str']
+        table = 'test.student_feedback'
+        for i in range(1,self.set_ques_len+1):
+            self.sql_con.get_where_specified(table=table,get_cols=get_cols,from_col=from_col,val_from_col=[str(i),assign],dtype_from_col=dtype_from_col)
+            if st.session_state[pt.submit] != None and len(st.session_state[pt.submit]) > 0:
+                q = st.session_state[pt.submit][0]
+                q = [val for val in q]
+                fb.loc[i] = q 
+        fb = fb[1:]
+        return fb
+    
     def edit_notes(self,assign_name):
         "Cannot have quotes in input"
         with st.form('Note Edit'):   
