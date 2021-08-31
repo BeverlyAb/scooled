@@ -14,7 +14,7 @@ The following functionality is completed:
   * [x] Reads contents of quizzes and feedback from students from CDB
   * [x] Creates supplementary notes that clarifies the question and answer (ideally this is sent to the students who missed the question)
 
-**Futures** features:
+**Future** features:
 * [ ] Teacher perspective
   * [ ] Allow teachers to upload lesson plans as files, images, or direct text
   * [ ] Use OpenAI to automatically generate quizzes from lesson plans
