@@ -16,8 +16,8 @@ The following **required** functionality is complete:
 
 **Futures** features:
 * [ ] Teacher perspective
- * [ ] Allow teachers to upload lesson plans as files, images, or direct text
- * [ ] Use OpenAI to automatically generate quizzes from lesson plans
+  * [ ] Allow teachers to upload lesson plans as files, images, or direct text
+  * [ ] Use OpenAI to automatically generate quizzes from lesson plans
 
 * [ ] Student Perspective
   * [ ] Read quizzes, retry, and be able to submit feedback to instructor
