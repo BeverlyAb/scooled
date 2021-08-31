@@ -2,6 +2,11 @@
 
 App that stands for "It's Cool Education."  It makes creating customizable teaching and iterative learning easy!
 
+## Video Walkthrough 
+
+[s'CoolEd Walkthrough](https://uci.zoom.us/rec/share/lK6_W94ndTIfppk7EUBKvYWGLDDpPaS9AyFubhgQwYn9RDzCzpQFBoB-kbbeV45S.i24Nym6Tj_5WLb2W?startTime=1630269059000)
+
+
 ## User Stories
 
 The following **required** functionality is complete:
@@ -23,9 +28,4 @@ From teacher perspective
 
 ## Entity Relationship Diagram
 <img src='img/Scooled_ERD.png' title='ERD' width='' alt='ERD' />
-## Video Walkthrough 
-
-Here's a walkthrough of implemented user stories:
-
-[s'CoolEd Walkthrough](https://uci.zoom.us/rec/share/lK6_W94ndTIfppk7EUBKvYWGLDDpPaS9AyFubhgQwYn9RDzCzpQFBoB-kbbeV45S.i24Nym6Tj_5WLb2W?startTime=1630269059000)
 
