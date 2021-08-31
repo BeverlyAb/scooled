@@ -14,7 +14,7 @@ From teacher perspective
 * [x] Reads contents of quizzes and feedback from students from CDB
 * [x] Creates supplementary notes that clarifies the question and answer (ideally this is sent to the students who missed the question)
 
-**Futures** features are implemented:
+**Futures** features:
 * [ ] Use OpenAI to automatically generate quizzes
 * [ ] Write grades and record retries to CDB
 * [ ] Student Perspective
