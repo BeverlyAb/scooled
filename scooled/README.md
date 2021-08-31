@@ -1,4 +1,4 @@
-# s'cooled
+# s'CoolEd
 
 App that stands for "It's Cool Education."  It makes creating customizable teaching and iterative learning easy!
 
