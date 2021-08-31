@@ -21,7 +21,7 @@ From teacher perspective
   * [ ]  Parents get notification of their child(ren)'s grades, retry attempts, and forum comments (remove anonymity and enforce parents to be involved before it's too late) 
 
 ## Entity Relationship Diagram
-
+<img src='img/Scooled_ERD.png' title='ERD' width='' alt='ERD' />
 ## Video Walkthrough 
 
 Here's a walkthrough of implemented user stories:
