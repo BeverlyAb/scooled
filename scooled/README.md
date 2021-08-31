@@ -26,5 +26,5 @@ From teacher perspective
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://uci.zoom.us/rec/play/7jbDyT3weHwyl4WP9Y3GoGFMzLnoaiDgeYLcHayqyuiJKa9IicrrTejYoxQopFbgGik7wQVc_blpQZ-7.0WMnKHvc-XxGE8od?startTime=1630269059000&_x_zm_rtaid=URy756IQQs6mCYx10DmM0g.1630437901086.f8821032b3e479a97798c80d5ecadf63&_x_zm_rhtaid=775' title='sCoolEd Walkthrough' width='' alt='sCooled Walkthrough' />
+(s'CoolEd Walkthrough)[https://uci.zoom.us/rec/share/lK6_W94ndTIfppk7EUBKvYWGLDDpPaS9AyFubhgQwYn9RDzCzpQFBoB-kbbeV45S.i24Nym6Tj_5WLb2W?startTime=1630269059000]
 
