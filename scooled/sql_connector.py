@@ -84,7 +84,7 @@ class SQLConnector():
             else:
                 query += f" OR {from_col[i]} LIKE '{val_from_col[i]}%'"
         query += ";"
-        st.write(query)
+        # st.write(query)
         self.query(query)
 
     def get(self,table : str, col : list):

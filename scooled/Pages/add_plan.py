@@ -106,7 +106,6 @@ class AddPlan():
         self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
                                     val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
-        # df = pd.DataFrame(list(full), columns=[title])
         return full[0][0]
 
     def display(self):
