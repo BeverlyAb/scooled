@@ -25,9 +25,8 @@ class SQLConnector():
 
     # @st.cache(hash_funcs={psycopg2.extensions.connection: id},show_spinner=False)
     def query(self, command : str):
-        # st.write(command)
-        # self.connect()
-        with psycopg2.connect(database = os.environ["db"],user = os.environ["user"] ,host = os.environ["hostname"] ,password = os.environ["password"], port = os.environ["port"]):  
+        self.connect()
+        with self.conn:
             with self.conn.cursor() as cur:
                 try:
                     cur.execute(command)
@@ -38,8 +37,9 @@ class SQLConnector():
                     st.write(e)
                     cur.close()
                     return e
-        # self.conn.close()
+        self.conn.close()
         return None
+ 
 
     def write(self, command : str):
         self.connect()
@@ -136,7 +136,7 @@ class SQLConnector():
     
         # insert into test values (1, pg_read_file('/home/xyz')::bytea);
         query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals},{file_content}::bytea);"
-        return self.write(query)
+        return self.query(query)
 
     def write_file_to_db(self,table,filename):
         query = f"COPY {table} FROM filename;"
