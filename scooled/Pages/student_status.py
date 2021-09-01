@@ -41,8 +41,10 @@ class StudentStatus:
         from_col=['assign_name']
         dtype_from_col=['str']
         table = 'test.general_course'
+
+        # get all exams under a course and the le
         self.sql_con.query(f"SELECT COUNT(DISTINCT assign_name) FROM test.general_course WHERE (assign_name) LIKE '{course.split('_')[0]}%';")
-        exam_len = 4
+        exam_len = st.session_state[pt.submit][0][0]
         val_from_col = []
         for i in range(exam_len):
             val_from_col.append(course+"_"+str(i))
