@@ -23,6 +23,7 @@ class AddPlan():
         self.sql_con = SQLConnector()
         self.courses = []
         self.id = id
+        self.lessons = []
 
     def update_courses(self):
         """updates the course according to the teacher
@@ -69,8 +70,24 @@ class AddPlan():
                 else:
                     st.error('No file uploaded')
 
+    def update_lesson(self,course):
+        """updates exam choices based on course selected
+
+        Args:
+            course (str): 
+        """        
+        get_col = ['lesson_title']
+        table = 'test.teacher'
+        from_col = ['course']
+        val_from_col = [course]
+        dtype_from_col = ['str']
+        self.sql_con.get_where_specified(
+            table, get_col, from_col, val_from_col, dtype_from_col)
+        self.lessons = [val[0] for val in filter(lambda x : x[0] != None,st.session_state[pt.submit])]
+
+
     @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
-    def get_lesson_plans(self, course):
+    def get_lesson_plans(self, course, title):
         """displays lesson plans and enables caching
 
         Args:
@@ -80,33 +97,41 @@ class AddPlan():
             pd.DataFrame: lessons
         """
 
-        get_cols = ['lesson_title', 'lesson_plan']
-        from_col = ['course', 'id']
-        dtype_from_col = ['str', 'str']
+        get_cols = ['lesson_plan']
+        from_col = ['course', 'id','lesson_title']
+        dtype_from_col = ['str', 'str','str']
         table = 'test.teacher'
 
-        val_from_col = [course, self.id]
+        val_from_col = [course, self.id,title]
         self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
                                     val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
-        df = pd.DataFrame(list(full), columns=["Title", "Lesson Plan"])
-        df = df.dropna()
-        return df.transpose()
+        df = pd.DataFrame(list(full), columns=["Lesson Plan"])
+        return df
 
     def display(self):
-        """display student status
-        """
+        """displays pg
+        """        
         course = st.sidebar.selectbox("Courses", options=self.courses)
-        st.subheader(f'{course} Lesson Plans')
+        self.update_lesson(course)
+        lesson = st.sidebar.selectbox('Lessons',options=self.lessons)
+        
+        if len(self.lessons) > 0:
+            st.subheader(lesson)
+            with st.expander('View Lesson Plans'):
+                st.table(self.get_lesson_plans(course,lesson))
 
-        with st.expander('View Lesson Plans'):
-            st.table(self.get_lesson_plans(course))
-
-        with st.expander('Create'):
-            self.create_form(course)
+            with st.expander('Create'):
+                self.create_form(course)
 
         # with st.expander('Upload'):
         #     self.upload(course)
+        else:
+
+            st.subheader("No lesson available. Let's create one!")
+            with st.expander('Create'):
+                self.create_form(course)
+
 
     def run(id):
         """runs page
