@@ -1,3 +1,4 @@
+from streamlit.caching import suppress_cached_st_function_warning
 from structs import PageType as pt
 import psycopg2
 import streamlit as st
@@ -15,14 +16,16 @@ class SQLConnector():
     def __del__(self):
         del self.conn
 
+    @st.cache(hash_funcs={psycopg2.extensions.connection: id},allow_output_mutation=True)
     def connect(self):
         self.conn = psycopg2.connect(database = os.environ["db"],user = os.environ["user"] ,host = os.environ["hostname"] ,password = os.environ["password"], port = os.environ["port"])  
-        
-    def query(self, command : str):
-        # st.write(command)
-        self.connect()
+        return self.conn
 
-        with self.conn:
+    # @st.cache(hash_funcs={psycopg2.extensions.connection: id},allow_output_mutation=True,show_spinner=False)
+    def query(self, command : str):
+        st.write(command)
+        # self.connect()
+        with psycopg2.connect(database = os.environ["db"],user = os.environ["user"] ,host = os.environ["hostname"] ,password = os.environ["password"], port = os.environ["port"]):  
             with self.conn.cursor() as cur:
                 try:
                     cur.execute(command)
@@ -32,7 +35,7 @@ class SQLConnector():
                     st.write(e)
                     cur.close()
                     return e
-        self.conn.close()
+        # self.conn.close()
         return None
 
     def get_where_specified(self,table : str, get_cols : list, from_col : list, val_from_col : list, dtype_from_col:list):
