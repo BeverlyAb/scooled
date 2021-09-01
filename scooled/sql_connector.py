@@ -119,7 +119,7 @@ class SQLConnector():
         query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
         return self.write(query)
 
-    def upload(self, table : str, to_cols : list, to_vals : list):
+    def upload(self, table : str, to_cols : list, to_vals : list, file_content):
         """inserts to values to existing row and column
 
         Args:
@@ -131,11 +131,12 @@ class SQLConnector():
             psycopg2.connect
         """        
         to_cols = ", ".join(to_cols)
-        to_vals = ["(%" + val + ")" for val in to_vals]
-        to_vals_str = ", ".join(to_vals)
-        st.write(len(to_vals_str))
-        query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals_str});"
-        return self.write(query,to_vals)
+        to_vals = ["'" + val + "'" for val in to_vals]
+        to_vals = ", ".join(to_vals)
+    
+        # insert into test values (1, pg_read_file('/home/xyz')::bytea);
+        query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals},{file_content}::bytea);"
+        return self.write(query)
 
     def write_file_to_db(self,table,filename):
         query = f"COPY {table} FROM filename;"

@@ -61,21 +61,21 @@ class AddPlan():
             if st.form_submit_button('Upload'):
                 if file != None:
                     table = 'test.teacher'
-                    to_cols = ['lesson_plan', 'id', 'course']
-                    contents = str(psycopg2.Binary(file.getbuffer()))
-                    to_vals = [contents, self.id, course]
+                    to_cols = ['id', 'course','file']
+                    contents = psycopg2.Binary(file.getbuffer())
+                    to_vals = [self.id, course]
                     self.sql_con.upload(
-                        table=table, to_cols=to_cols, to_vals=to_vals)
+                        table=table, to_cols=to_cols,to_vals=to_vals,file_content=contents)
                     st.success(f'Successfully uploaded {file.name}')
                 else:
                     st.error('No file uploaded')
 
-    def update_lesson(self,course):
+    def update_lesson(self, course):
         """updates exam choices based on course selected
 
         Args:
             course (str): 
-        """        
+        """
         get_col = ['lesson_title']
         table = 'test.teacher'
         from_col = ['course']
@@ -83,8 +83,8 @@ class AddPlan():
         dtype_from_col = ['str']
         self.sql_con.get_where_specified(
             table, get_col, from_col, val_from_col, dtype_from_col)
-        self.lessons = [val[0] for val in filter(lambda x : x[0] != None,st.session_state[pt.submit])]
-
+        self.lessons = [val[0] for val in filter(
+            lambda x: x[0] != None, st.session_state[pt.submit])]
 
     @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
     def get_lesson_plans(self, course, title):
@@ -98,39 +98,35 @@ class AddPlan():
         """
 
         get_cols = ['lesson_plan']
-        from_col = ['course', 'id','lesson_title']
-        dtype_from_col = ['str', 'str','str']
+        from_col = ['course', 'id', 'lesson_title']
+        dtype_from_col = ['str', 'str', 'str']
         table = 'test.teacher'
 
-        val_from_col = [course, self.id,title]
+        val_from_col = [course, self.id, title]
         self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
-                                    val_from_col=val_from_col, dtype_from_col=dtype_from_col)
+                                         val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
         return full[0][0]
 
     def display(self):
         """displays pg
-        """        
+        """
         course = st.sidebar.selectbox("Courses", options=self.courses)
         self.update_lesson(course)
-        lesson = st.sidebar.selectbox('Lessons',options=self.lessons)
-        
+        lesson = st.sidebar.selectbox('Lessons', options=self.lessons)
+
         if len(self.lessons) > 0:
             st.subheader(f"Lesson plan - {lesson}")
             with st.expander('View'):
-                st.write(self.get_lesson_plans(course,lesson))
-
-            with st.expander('Create'):
-                self.create_form(course)
-
-        # with st.expander('Upload'):
-        #     self.upload(course)
+                st.write(self.get_lesson_plans(course, lesson))
         else:
-
             st.subheader(f"No {course} lesson yet. Let's create one!")
-            with st.expander('Create'):
-                self.create_form(course)
 
+        with st.expander('Create'):
+            self.create_form(course)
+
+        with st.expander('Upload'):
+            self.upload(course)
 
     def run(id):
         """runs page
