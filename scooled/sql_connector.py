@@ -52,6 +52,24 @@ class SQLConnector():
                 query += f" AND {from_col[i]} = {val_from_col[i]}"
             else:
                 query += f" AND {from_col[i]} = '{val_from_col[i]}'"
+        query += ";"
+        # st.write(query)
+        self.query(query)
+
+    def get_where_like(self,table : str, get_cols : list, from_col : list, val_from_col : list, dtype_from_col:list):
+        '''get certain col(s) based on similar col value'''
+
+        query = f"SELECT {','.join(get_cols)} FROM {table}"
+        if dtype_from_col[0] == 'int':
+            query += f" WHERE {from_col[0]} = {val_from_col[0]}"
+        else:
+            query += f" WHERE {from_col[0]} LIKE '{val_from_col[0]}%'"
+        for i in range(1,len(from_col)):
+            if dtype_from_col[i] == 'int':
+                query += f" OR {from_col[i]} = {val_from_col[i]}"
+            else:
+                query += f" OR {from_col[i]} LIKE '{val_from_col[i]}%'"
+        query += ";"
         # st.write(query)
         self.query(query)
 

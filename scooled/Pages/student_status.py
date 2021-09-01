@@ -4,6 +4,7 @@ from sql_connector import SQLConnector
 import streamlit as st
 import pandas as pd
 import psycopg2
+import numpy as np
 
 ''' Displays # perfect scores and retries per exam given a course'''
 
@@ -36,26 +37,15 @@ class StudentStatus:
 
     @st.cache(hash_funcs={psycopg2.extensions.connection: id},show_spinner=False)
     def get_student_status(self,course):
-        df = pd.DataFrame([["","","","",""]] , columns = ["Assignment","Description","# of Perfect Scores","# of Retries","Time of Last Retry"])
         get_cols = ['assign_name','topic','num_full_grade','retries','time']
         from_col=['assign_name']
         dtype_from_col=['str']
         table = 'test.general_course'
 
-        # get all exams under a course and the le
-        self.sql_con.query(f"SELECT COUNT(DISTINCT assign_name) FROM test.general_course WHERE (assign_name) LIKE '{course.split('_')[0]}%';")
-        exam_len = st.session_state[pt.submit][0][0]
-        val_from_col = []
-        for i in range(exam_len):
-            val_from_col.append(course+"_"+str(i))
-        val_from_col = [val_from_col]
-    
-        for i in range(exam_len):
-            self.sql_con.get_where_specified(table=table,get_cols=get_cols,from_col=from_col,val_from_col=[val_from_col[0][i]],dtype_from_col=dtype_from_col)
-            if st.session_state[pt.submit] != None and len(st.session_state[pt.submit]) > 0:
-                q = st.session_state[pt.submit][0]
-                q = [val for val in q]
-                df.loc[i] = q 
+        val_from_col = [course]
+        self.sql_con.get_where_like(table=table,get_cols=get_cols,from_col=from_col,val_from_col=val_from_col,dtype_from_col=dtype_from_col)
+        full = st.session_state[pt.submit]
+        df = pd.DataFrame(list(full) , columns = ["Assignment","Description","# of Perfect Scores","# of Retries","Time of Last Retry"])
         return df
 
     def display(self):
