@@ -103,11 +103,11 @@ class AddPlan():
         table = 'test.teacher'
 
         val_from_col = [course, self.id,title]
-        self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
+        self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
                                     val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
-        df = pd.DataFrame(list(full), columns=["Lesson Plan"])
-        return df
+        # df = pd.DataFrame(list(full), columns=[title])
+        return full[0][0]
 
     def display(self):
         """displays pg
@@ -119,7 +119,7 @@ class AddPlan():
         if len(self.lessons) > 0:
             st.subheader(lesson)
             with st.expander('View Lesson Plans'):
-                st.table(self.get_lesson_plans(course,lesson))
+                st.write(self.get_lesson_plans(course,lesson))
 
             with st.expander('Create'):
                 self.create_form(course)
