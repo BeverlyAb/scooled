@@ -29,10 +29,8 @@ class StudentStatus:
         val_from_col = [self.id]
         dtype_from_col = ['str']
         self.sql_conn.get_where_specified(table,get_col,from_col,val_from_col,dtype_from_col)
-    
-        self.courses = [val[0] for val in st.session_state[pt.submit]]
+        self.courses = [val[0] for val in sorted(st.session_state[pt.submit])]
         
-
     def display(self):
         st.title("s'CoolEd")
         course = st.sidebar.selectbox("Courses", options=self.courses)

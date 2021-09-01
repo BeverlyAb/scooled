@@ -11,7 +11,9 @@ class SQLConnector():
     def __init__(self):
         # I am the only one using this at this point 
         self.conn = psycopg2.connect(database = os.environ["db"],user = os.environ["user"] ,host = os.environ["hostname"] ,password = os.environ["password"], port = os.environ["port"])  
-        # self.cur.execute("USE test;")
+        # # self.cur.execute("USE test;")
+        # if pt.submit not in st.session_state:
+        #     st.session_state[pt.submit] = None
 
     def __del__(self):
         del self.conn
