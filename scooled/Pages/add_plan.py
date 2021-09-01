@@ -35,33 +35,7 @@ class AddPlan():
             table, get_col, from_col, val_from_col, dtype_from_col)
         self.courses = [val[0] for val in sorted(st.session_state[pt.submit])]
 
-    
 
-    @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
-    def get_student_status(self, course):
-        """displays student statuses and enables caching
-
-        Args:
-            course (str): retrieves status depending on course
-
-        Returns:
-            pd.DataFrame: student statuses
-        """        
-        
-        get_cols = ['assign_name', 'topic',
-                    'num_full_grade', 'retries', 'time']
-        from_col = ['assign_name']
-        dtype_from_col = ['str']
-        table = 'test.general_course'
-
-        val_from_col = [course]
-        self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
-                                    val_from_col=val_from_col, dtype_from_col=dtype_from_col)
-        full = st.session_state[pt.submit]
-        df = pd.DataFrame(list(full), columns=[
-                            "Assignment", "Description", "# of Perfect Scores", "# of Retries", "Time of Last Retry"])
-        
-        return df.sort_values(by=['Assignment'])
     
     def create_form(self,course):
         """allows user to type input and save as file
@@ -72,8 +46,8 @@ class AddPlan():
             if st.form_submit_button('Save'):
                 if lesson != "" and content != "":
                     table = 'test.teacher'
-                    to_cols = ['lesson_plan','id','course']
-                    to_vals = [str(content),self.id,course]
+                    to_cols = ['lesson_plan','id','course','lesson_title']
+                    to_vals = [str(content),self.id,course,lesson]
                     self.sql_con.insert(table,to_cols,to_vals)
                     st.success(f'Successfully created {lesson}')
                 else:
@@ -95,8 +69,28 @@ class AddPlan():
                 else:
                     st.error('No file uploaded')
     
+    @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
     def get_lesson_plans(self,course):
-        st.write("Hello")
+        """displays lesson plans and enables caching
+
+        Args:
+            course (str): retrieves lessons depending on course
+
+        Returns:
+            pd.DataFrame: lessons
+        """        
+        
+        get_cols = ['lesson_title','lesson_plan']
+        from_col = ['course','id']
+        dtype_from_col = ['str','str']
+        table = 'test.teacher'
+
+        val_from_col = [course,self.id]
+        self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
+                                    val_from_col=val_from_col, dtype_from_col=dtype_from_col)
+        full = st.session_state[pt.submit]
+        df = pd.DataFrame(list(full), columns=["Title","Lesson Plan"])
+        return df
 
     def display(self):
         """display student status
@@ -105,7 +99,7 @@ class AddPlan():
         st.subheader(f'{course} Lesson Plans')
         
         with st.expander('View Lesson Plans'):
-            self.get_lesson_plans(course)
+            st.table(self.get_lesson_plans(course))
 
         with st.expander('Create'):
             self.create_form(course)
