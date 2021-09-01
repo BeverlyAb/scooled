@@ -12,6 +12,7 @@ from Pages.student_status import StudentStatus
 if __name__ == "__main__":
 
     name = 'Bev'
+    st.title("s'CoolEd")
     st.sidebar.title(f"Welcome, {name}!")
     teacher_opt = ['Add Lessons','New Assignment','Student Status']
     

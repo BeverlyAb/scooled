@@ -18,14 +18,14 @@ class SQLConnector():
     def __del__(self):
         del self.conn
 
-    @st.cache(hash_funcs={psycopg2.extensions.connection: id},allow_output_mutation=True)
+    # @st.cache(hash_funcs={psycopg2.extensions.connection: id},allow_output_mutation=True)
     def connect(self):
         self.conn = psycopg2.connect(database = os.environ["db"],user = os.environ["user"] ,host = os.environ["hostname"] ,password = os.environ["password"], port = os.environ["port"])  
         return self.conn
 
-    # @st.cache(hash_funcs={psycopg2.extensions.connection: id},allow_output_mutation=True,show_spinner=False)
+    # @st.cache(hash_funcs={psycopg2.extensions.connection: id},show_spinner=False)
     def query(self, command : str):
-        st.write(command)
+        # st.write(command)
         # self.connect()
         with psycopg2.connect(database = os.environ["db"],user = os.environ["user"] ,host = os.environ["hostname"] ,password = os.environ["password"], port = os.environ["port"]):  
             with self.conn.cursor() as cur:
