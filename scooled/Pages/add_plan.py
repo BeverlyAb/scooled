@@ -128,7 +128,7 @@ class AddPlan():
         #     self.upload(course)
         else:
 
-            st.subheader("No lesson available. Let's create one!")
+            st.subheader(f"No {course} lesson yet. Let's create one!")
             with st.expander('Create'):
                 self.create_form(course)
 
