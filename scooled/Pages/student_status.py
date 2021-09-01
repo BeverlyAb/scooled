@@ -58,7 +58,7 @@ class StudentStatus:
         df = pd.DataFrame(list(full), columns=[
                           "Assignment", "Description", "# of Perfect Scores", "# of Retries", "Time of Last Retry"])
         
-        return df
+        return df.sort_values(by=['Assignment'])
 
     def display(self):
         """display student status

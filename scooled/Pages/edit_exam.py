@@ -76,7 +76,8 @@ class EditExam:
         full = st.session_state[pt.submit]
         df = pd.DataFrame(list(full), columns=[
                           "Number", "Question", "Answer", "Option 1", "Option 2", "Option 3"])
-        return df
+        df = df.set_index('Number')
+        return df.sort_values(by=['Number'])
 
     @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
     def get_feedback(self, exam):
@@ -97,9 +98,32 @@ class EditExam:
         self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
                                     val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
-        df = pd.DataFrame(list(full), columns=["Number", "Student", "Feedback"])
+        df = pd.DataFrame(list(full), columns=["Number", "Student", "Feedback Per Question"])
         df = df.set_index('Number')
-        return df
+        return df.sort_values(by=['Number'])
+
+    @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
+    def get_notes(self, exam):
+        """gets notes based on exam
+
+        Args:
+            exam (str)): 
+
+        Returns:
+            pd.DataFrame:
+        """        
+        get_cols = ['question_num','note']
+        from_col = ['assign_name']
+        dtype_from_col = ['str']
+        table = 'test.question_bank'
+
+        val_from_col = [exam]
+        self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
+                                    val_from_col=val_from_col, dtype_from_col=dtype_from_col)
+        full = st.session_state[pt.submit]
+        df = pd.DataFrame(list(full), columns=["Number", "Note Per Question"])
+        df = df.set_index('Number')
+        return df.sort_values(by=['Number'])
 
     def display(self):
         """displays pg
@@ -113,6 +137,8 @@ class EditExam:
             st.table(self.get_exam_details(exam,course))
         with st.expander('Student Feedback'):
             st.table(self.get_feedback(exam))
+        with st.expander('Notes'):
+            st.table(self.get_notes(exam))
 
     def run(id):
         """runs page
