@@ -13,7 +13,7 @@ class PageType:
     bank : str = 'question_bank'
 
 class PageName:
-    add : str = "Add lesson plan"
+    lesson : str = "Lesson plan"
     new : str = "Create a new assignment"
     status : str = "View Student Status"
-    edit : str = "Edit Assignment"
+    assignment : str = "Assignment"

@@ -21,8 +21,8 @@ if __name__ == "__main__":
     
     app = MultiPage()
     app.add_page(pg.status,StudentStatus.run)
-    app.add_page(pg.add,AddPlan.run)
-    app.add_page(pg.edit,EditExam.run)
+    app.add_page(pg.lesson,AddPlan.run)
+    app.add_page(pg.assignment,EditExam.run)
     app.run(name)
 
     # sel = st.sidebar.selectbox('What would you like to do?',options=teacher_opt)

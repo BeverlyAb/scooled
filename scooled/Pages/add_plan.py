@@ -80,13 +80,19 @@ class AddPlan():
                     st.success(f'Successfully uploaded {file.name}')
                 else:
                     st.error('No file uploaded')
+    
+    def get_lesson_plans(self):
+        st.write("Hello")
 
     def display(self):
         """display student status
         """        
         course = st.sidebar.selectbox("Courses", options=self.courses)
-        st.subheader(f'New {course} Lesson Plan')
+        st.subheader(f'{course} Lesson Plans')
         
+        with st.expander('View Lesson Plans'):
+            self.get_lesson_plans()
+
         with st.expander('Create'):
             self.create_form()
         
