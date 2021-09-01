@@ -71,7 +71,10 @@ class AddPlan():
             content = st.text_area("Write away!")
             if st.form_submit_button('Save'):
                 if lesson != "" and content != "":
-                    st.write("QUERY TIME")
+                    table = 'test.teacher'
+                    to_cols = ['lesson_plan','id','course']
+                    to_vals = [str(content),self.id,course]
+                    self.sql_con.insert(table,to_cols,to_vals)
                     st.success(f'Successfully created {lesson}')
                 else:
                     st.error('Title and lesson cannot be empty.')
@@ -85,12 +88,9 @@ class AddPlan():
                 if file != None:
                     table = 'test.teacher'
                     to_cols = ['lesson_plan','id','course']
-                    contents =  'sf'#psycopg2.Binary(file.getbuffer())
+                    contents = str(psycopg2.Binary(file.getbuffer()))
                     to_vals = [contents,self.id,course]
-                    # self.sql_con.query(s)
-                    query = "INSERT INTO test.teacher (lesson_plan, id, course) VALUES ('ddddf', 'Bev', 'Art');"
-                    self.sql_con.write(query)
-                    # self.sql_con.insert(table=table,to_cols=to_cols,to_vals=to_vals)
+                    self.sql_con.upload(table=table,to_cols=to_cols,to_vals=to_vals)
                     st.success(f'Successfully uploaded {file.name}')
                 else:
                     st.error('No file uploaded')

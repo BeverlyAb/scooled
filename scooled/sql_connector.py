@@ -43,7 +43,6 @@ class SQLConnector():
 
     def write(self, command : str):
         self.connect()
-
         with self.conn:
             with self.conn.cursor() as cur:
                 try:
@@ -118,8 +117,25 @@ class SQLConnector():
         to_vals = ["'" + val + "'" for val in to_vals]
         to_vals = ", ".join(to_vals)
         query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
-        st.write(query)
-        return self.query(query)
+        return self.write(query)
+
+    def upload(self, table : str, to_cols : list, to_vals : list):
+        """inserts to values to existing row and column
+
+        Args:
+            table (str): table
+            to_cols (list): which columns to store into
+            to_vals (list): which values to store
+
+        Returns:
+            psycopg2.connect
+        """        
+        to_cols = ", ".join(to_cols)
+        to_vals = ["(%" + val + ")" for val in to_vals]
+        to_vals_str = ", ".join(to_vals)
+        st.write(len(to_vals_str))
+        query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals_str});"
+        return self.write(query,to_vals)
 
     def write_file_to_db(self,table,filename):
         query = f"COPY {table} FROM filename;"
