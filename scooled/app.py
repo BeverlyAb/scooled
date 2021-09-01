@@ -9,6 +9,7 @@ import pandas as pd
 from question_bank import QuestionBank
 from multi_page import MultiPage
 from Pages.student_status import StudentStatus
+from Pages.add_plan import AddPlan
 from structs import PageName as pg
 
 if __name__ == "__main__":
@@ -19,8 +20,9 @@ if __name__ == "__main__":
     # teacher_opt = [pt.add,pt.new,pt.status,pt.edit]
     
     app = MultiPage()
-    app.add_page(pg.edit,EditExam.run)
     app.add_page(pg.status,StudentStatus.run)
+    app.add_page(pg.add,AddPlan.run)
+    app.add_page(pg.edit,EditExam.run)
     app.run(name)
 
     # sel = st.sidebar.selectbox('What would you like to do?',options=teacher_opt)
