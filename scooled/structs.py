@@ -14,6 +14,6 @@ class PageType:
 
 class PageName:
     lesson : str = "Lesson plan"
-    new : str = "Create a new assignment"
+    new_assign : str = "Create a new assignment"
     status : str = "View Student Status"
-    assignment : str = "Assignment"
+    assignment : str = "View Assignment"
