@@ -24,6 +24,8 @@ class EditExam:
         self.courses = []
         self.exam = ""
         self.id = id
+        self.ques_len = 4
+        self.ans_len = 3
 
     def update_courses(self):
         """updates the course according to the teacher
@@ -48,28 +50,33 @@ class EditExam:
         self.exams = [val[0] for val in sorted(st.session_state[pt.submit])]
 
     @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
-    def get_student_status(self, course):
-        """displays student statuses and enables caching
+    def get_exam_details(self, exam,course):
+        get_cols = ['question_num','question','answer','opt1','opt2','opt3']
+        from_col = ['assign_name','course_name']
+        dtype_from_col = ['str','str']
+        table = 'test.question_bank'
 
-        Args:
-            course (str): retrieves status depending on course
-
-        Returns:
-            pd.DataFrame: student statuses
-        """        
-        
-        get_cols = ['assign_name', 'topic',
-                    'num_full_grade', 'retries', 'time']
-        from_col = ['assign_name']
-        dtype_from_col = ['str']
-        table = 'test.general_course'
-
-        val_from_col = [course]
+        val_from_col = [exam,course]
         self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
                                     val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
         df = pd.DataFrame(list(full), columns=[
-                          "Assignment", "Description", "# of Perfect Scores", "# of Retries", "Time of Last Retry"])
+                          "Number", "Question", "Answer", "Option 1", "Option 2", "Option 3"])
+        return df
+
+    @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
+    def get_feedback(self, exam):
+        get_cols = ['question_num','student','feedback']
+        from_col = ['assign_name']
+        dtype_from_col = ['str']
+        table = 'test.student_feedback'
+
+        val_from_col = [exam]
+        self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
+                                    val_from_col=val_from_col, dtype_from_col=dtype_from_col)
+        full = st.session_state[pt.submit]
+        df = pd.DataFrame(list(full), columns=["Number", "Student", "Feedback"])
+        df = df.set_index('Number')
         return df
 
     def display(self):
@@ -78,7 +85,12 @@ class EditExam:
         course = st.sidebar.selectbox("Courses", options=self.courses)
         self.update_exam(course)
         exam = st.sidebar.selectbox('Exams',options=self.exams)
-        # st.write(self.get_student_status(course))
+        
+        st.subheader(exam)
+        with st.expander('Questions'):
+            st.table(self.get_exam_details(exam,course))
+        with st.expander('Student Feedback'):
+            st.table(self.get_feedback(exam))
 
     def run(id):
         """runs page

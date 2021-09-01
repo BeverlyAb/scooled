@@ -14,7 +14,7 @@ class StudentStatus:
         """Every teacher should have:
         - name
         - course
-        
+
         Args:
             id (str): name or email of teacher
         """
@@ -57,13 +57,15 @@ class StudentStatus:
         full = st.session_state[pt.submit]
         df = pd.DataFrame(list(full), columns=[
                           "Assignment", "Description", "# of Perfect Scores", "# of Retries", "Time of Last Retry"])
+        
         return df
 
     def display(self):
         """display student status
         """        
+        st.subheader('Overview')
         course = st.sidebar.selectbox("Courses", options=self.courses)
-        st.write(self.get_student_status(course))
+        st.table(self.get_student_status(course))
 
     def run(id):
         """runs page
