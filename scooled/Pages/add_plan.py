@@ -116,8 +116,8 @@ class AddPlan():
         lesson = st.sidebar.selectbox('Lessons',options=self.lessons)
         
         if len(self.lessons) > 0:
-            st.subheader(lesson)
-            with st.expander('View Lesson Plans'):
+            st.subheader(f"Lesson plan - {lesson}")
+            with st.expander('View'):
                 st.write(self.get_lesson_plans(course,lesson))
 
             with st.expander('Create'):
