@@ -68,8 +68,11 @@ class AddPlan():
             lesson = st.text_input(label="Title")
             content = st.text_area("Write away!")
             if st.form_submit_button('Save'):
-                st.write("QUERY TIME")
-                st.success(f'Successfully created {lesson}')
+                if lesson != "" and content != "":
+                    st.write("QUERY TIME")
+                    st.success(f'Successfully created {lesson}')
+                else:
+                    st.error('Title and lesson cannot be empty.')
 
     def upload(self):
         with st.form('Upload Form'):
