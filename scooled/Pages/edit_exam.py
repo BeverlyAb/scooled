@@ -1,25 +1,28 @@
-# student_status.py
+# edit_exam.py
 from structs import PageType as pt
 from sql_connector import SQLConnector
 import streamlit as st
 import pandas as pd
 import psycopg2
 
-''' Displays # perfect scores and retries per exam given a course'''
+''' - Displays questions, feedback, notes on a single assignment
+    - Enables editting notes
+'''
 
-
-class StudentStatus:
+class EditExam:
 
     def __init__(self, id: str):
         """Every teacher should have:
         - name
         - course
-        
+        - current course (to be used when viewing exam)
+
         Args:
             id (str): name or email of teacher
         """
         self.sql_con = SQLConnector()
         self.courses = []
+        self.exam = ""
         self.id = id
 
     def update_courses(self):
@@ -33,6 +36,16 @@ class StudentStatus:
         self.sql_con.get_where_specified(
             table, get_col, from_col, val_from_col, dtype_from_col)
         self.courses = [val[0] for val in sorted(st.session_state[pt.submit])]
+
+    def update_exam(self,course):
+        get_col = ['assign_name']
+        table = 'test.question_bank'
+        from_col = ['course_name']
+        val_from_col = [course]
+        dtype_from_col = ['str']
+        self.sql_con.get_where_specified(
+            table, get_col, from_col, val_from_col, dtype_from_col)
+        self.exams = [val[0] for val in sorted(st.session_state[pt.submit])]
 
     @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
     def get_student_status(self, course):
@@ -63,7 +76,9 @@ class StudentStatus:
         """display student status
         """        
         course = st.sidebar.selectbox("Courses", options=self.courses)
-        st.write(self.get_student_status(course))
+        self.update_exam(course)
+        exam = st.sidebar.selectbox('Exams',options=self.exams)
+        # st.write(self.get_student_status(course))
 
     def run(id):
         """runs page
@@ -71,6 +86,6 @@ class StudentStatus:
         Args:
             id (str): teacher's name or email
         """        
-        s_status = StudentStatus(id)
-        s_status.update_courses()
-        s_status.display()
+        exam = EditExam(id)
+        exam.update_courses()
+        exam.display()

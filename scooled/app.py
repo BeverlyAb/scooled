@@ -1,5 +1,6 @@
 # app.py
 
+from Pages.edit_exam import EditExam
 import streamlit as st
 from structs import PageType as pt
 # from teacher_page import Teacher
@@ -8,16 +9,18 @@ import pandas as pd
 from question_bank import QuestionBank
 from multi_page import MultiPage
 from Pages.student_status import StudentStatus
+from structs import PageName as pg
 
 if __name__ == "__main__":
 
     name = 'Bev'
     st.title("s'CoolEd")
     st.sidebar.title(f"Welcome, {name}!")
-    teacher_opt = ['Add Lessons','New Assignment','Student Status']
+    # teacher_opt = [pt.add,pt.new,pt.status,pt.edit]
     
     app = MultiPage()
-    app.add_page(teacher_opt[2],StudentStatus.run)
+    app.add_page(pg.edit,EditExam.run)
+    app.add_page(pg.status,StudentStatus.run)
     app.run(name)
 
     # sel = st.sidebar.selectbox('What would you like to do?',options=teacher_opt)
