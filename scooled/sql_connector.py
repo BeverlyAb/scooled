@@ -33,11 +33,26 @@ class SQLConnector():
                     cur.execute(command)
                     if cur.description != None:
                         st.session_state[pt.submit] = cur.fetchall()
+                    cur.close()
                 except Exception as e:
                     st.write(e)
                     cur.close()
                     return e
         # self.conn.close()
+        return None
+
+    def write(self, command : str):
+        self.connect()
+
+        with self.conn:
+            with self.conn.cursor() as cur:
+                try:
+                    cur.execute(command)
+                except Exception as e:
+                    st.write(e)
+                    cur.close()
+                    return e
+        self.conn.close()
         return None
 
     def get_where_specified(self,table : str, get_cols : list, from_col : list, val_from_col : list, dtype_from_col:list):
@@ -89,12 +104,26 @@ class SQLConnector():
 
 
     def insert(self, table : str, to_cols : list, to_vals : list):
+        """inserts to values to existing row and column
+
+        Args:
+            table (str): table
+            to_cols (list): which columns to store into
+            to_vals (list): which values to store
+
+        Returns:
+            psycopg2.connect
+        """        
         to_cols = ", ".join(to_cols)
         to_vals = ["'" + val + "'" for val in to_vals]
         to_vals = ", ".join(to_vals)
         query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
+        st.write(query)
         return self.query(query)
 
+    def write_file_to_db(self,table,filename):
+        query = f"COPY {table} FROM filename;"
+        self.query(query)
 # if __name__ == "__main__":
     # sql_con = SQLConnector()
     # get_cols = ['teacher','student']

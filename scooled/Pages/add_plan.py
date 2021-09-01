@@ -63,7 +63,9 @@ class AddPlan():
         
         return df.sort_values(by=['Assignment'])
     
-    def create_form(self):
+    def create_form(self,course):
+        """allows user to type input and save as file
+        """         
         with st.form('Create Form'):
             lesson = st.text_input(label="Title")
             content = st.text_area("Write away!")
@@ -74,17 +76,26 @@ class AddPlan():
                 else:
                     st.error('Title and lesson cannot be empty.')
 
-    def upload(self):
+    def upload(self,course):
+        """uploads files to db
+        """        
         with st.form('Upload Form'):
             file = st.file_uploader(label='File',accept_multiple_files=False)
-            if st.form_submit_button('Save'):
+            if st.form_submit_button('Upload'):
                 if file != None:
-                    st.write("QUERY HORAS")
+                    table = 'test.teacher'
+                    to_cols = ['lesson_plan','id','course']
+                    contents =  'sf'#psycopg2.Binary(file.getbuffer())
+                    to_vals = [contents,self.id,course]
+                    # self.sql_con.query(s)
+                    query = "INSERT INTO test.teacher (lesson_plan, id, course) VALUES ('ddddf', 'Bev', 'Art');"
+                    self.sql_con.write(query)
+                    # self.sql_con.insert(table=table,to_cols=to_cols,to_vals=to_vals)
                     st.success(f'Successfully uploaded {file.name}')
                 else:
                     st.error('No file uploaded')
     
-    def get_lesson_plans(self):
+    def get_lesson_plans(self,course):
         st.write("Hello")
 
     def display(self):
@@ -94,13 +105,13 @@ class AddPlan():
         st.subheader(f'{course} Lesson Plans')
         
         with st.expander('View Lesson Plans'):
-            self.get_lesson_plans()
+            self.get_lesson_plans(course)
 
         with st.expander('Create'):
-            self.create_form()
+            self.create_form(course)
         
         with st.expander('Upload'):
-            self.upload()
+            self.upload(course)
 
     def run(id):
         """runs page
