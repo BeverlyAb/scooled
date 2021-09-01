@@ -132,7 +132,11 @@ class EditExam:
         self.update_exam(course)
         exam = st.sidebar.selectbox('Exams',options=self.exams)
         
-        st.subheader(exam)
+        if exam != None:
+            st.subheader(exam)
+        else:
+            st.subheader('No assignment available')
+            st.stop()
         with st.expander('Questions'):
             st.table(self.get_exam_details(exam,course))
         with st.expander('Student Feedback'):
