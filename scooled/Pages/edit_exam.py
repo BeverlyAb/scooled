@@ -40,6 +40,11 @@ class EditExam:
         self.courses = [val[0] for val in sorted(st.session_state[pt.submit])]
 
     def update_exam(self,course):
+        """updates exam choices based on course selected
+
+        Args:
+            course (str): 
+        """        
         get_col = ['assign_name']
         table = 'test.question_bank'
         from_col = ['course_name']
@@ -51,6 +56,15 @@ class EditExam:
 
     @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
     def get_exam_details(self, exam,course):
+        """gets exam details
+
+        Args:
+            exam (str): 
+            course (str): 
+
+        Returns:
+            pd.DataFrame: 
+        """        
         get_cols = ['question_num','question','answer','opt1','opt2','opt3']
         from_col = ['assign_name','course_name']
         dtype_from_col = ['str','str']
@@ -66,6 +80,14 @@ class EditExam:
 
     @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
     def get_feedback(self, exam):
+        """gets student feedback
+
+        Args:
+            exam (str)): 
+
+        Returns:
+            pd.DataFrame: feedback
+        """        
         get_cols = ['question_num','student','feedback']
         from_col = ['assign_name']
         dtype_from_col = ['str']
@@ -80,7 +102,7 @@ class EditExam:
         return df
 
     def display(self):
-        """display student status
+        """displays pg
         """        
         course = st.sidebar.selectbox("Courses", options=self.courses)
         self.update_exam(course)
