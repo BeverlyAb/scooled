@@ -148,8 +148,8 @@ class AddPlan():
             st.subheader(f"Lesson plan - {lesson}")
             with st.expander('View'):
                 text = self.get_lesson_plans(course, lesson)
-                if text == None:
-                    text = self.get_file_from_db(course,lesson)
+                # if text == None:
+                #     text = self.get_file_from_db(course,lesson)
                 st.write(text)
         else:
             st.subheader(f"No {course} lesson yet. Let's create one!")
@@ -157,8 +157,8 @@ class AddPlan():
         with st.expander('Create'):
             self.create_form(course)
 
-        with st.expander('Upload'):
-            self.upload_file(course)
+        # with st.expander('Upload'):
+        #     self.upload_file(course)
 
     def run(id):
         """runs page
