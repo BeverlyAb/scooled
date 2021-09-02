@@ -54,9 +54,16 @@ class SQLConnector():
     #     self.conn.close()
     #     return None
     def update_where_specified(self,table : str, to_col : list,to_val : list, from_col : list, val_from_col : list, dtype_from_col:list):
-#         update Names
-# set name = name + ' a string to append'
-# where id = 2
+        """apppends values to existing col based on where
+
+        Args:
+            table (str): table name
+            to_col (list): col to be updated
+            to_val (list): val to be appended
+            from_col (list): specified col
+            val_from_col (list): specified values
+            dtype_from_col (list): data type of from_column data 
+        """        
         query = f"UPDATE {table} SET {to_col} =  {to_col} + {to_val}"
         if dtype_from_col[0] == 'int':
             query += f" WHERE {from_col[0]} = {val_from_col[0]}"
@@ -162,26 +169,29 @@ class SQLConnector():
 
         Args:
             table (str): table
-            to_cols (list): which columns to store into
-            to_vals (list): which values to store
-            file_content (psycopg2.Binary) : file contents
-
+            get_cols (list): which columns to get
+            from_col (list): specified col
+            val_from_col (list): specified values
+            dtype_from_col (list): data type of from_column data 
+        
         Returns:
             psycopg2.cursor
         """ 
+
         # "SELECT CONVERT_FROM(DECODE(f{file}, 'BASE64'), 'UTF-8') FROM ;"
-        query = f"SELECT {','.join(get_cols)} FROM {table}"
+        query = f"SELECT CONVERT_FROM(DECODE({','.join(get_cols)}, 'BASE64'), 'UTF-8') FROM {table}"
         if dtype_from_col[0] == 'int':
             query += f" WHERE {from_col[0]} = {val_from_col[0]}"
         else:
             query += f" WHERE {from_col[0]} LIKE '{val_from_col[0]}%'"
         for i in range(1,len(from_col)):
-            if dtype_from_col[i] != 'str':
+            if dtype_from_col[i] == 'str':
                 query += f" OR {from_col[i]} LIKE '{val_from_col[i]}%'"
             else:
                 query += f" OR {from_col[i]} = {val_from_col[i]}"
         query += ";" 
-
+        st.write(query)
+        return self.query(query)
   
 # if __name__ == "__main__":
     # sql_con = SQLConnector()

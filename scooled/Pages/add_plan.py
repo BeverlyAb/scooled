@@ -54,7 +54,7 @@ class AddPlan():
                 else:
                     st.error('Title and lesson cannot be empty.')
 
-    def upload(self, course):
+    def upload_file(self, course):
         """uploads files to db
         """
         with st.form('Upload Form'):
@@ -63,10 +63,14 @@ class AddPlan():
                 if file != None:
                     table = 'test.teacher'
                     to_cols = ['id','lesson_title', 'course','file']
-                    contents = psycopg2.Binary(file.getbuffer())
-                    to_vals = [self.id, file.name, course]
-                    self.sql_con.upload_bytea(
-                        table=table, to_cols=to_cols,to_vals=to_vals,file_content=contents)
+                    contents = file.getbuffer().tolist()#psycopg2.Binary(file.getbuffer())
+                    to_vals = [self.id, file.name, course,contents]
+                    st.write([chr(c)  for c in contents])
+                    st.write(type(contents))
+                    st.stop()
+                    self.sql_con.insert(table,to_cols,to_vals)
+                    # self.sql_con.upload_bytea(
+                        # table=table, to_cols=to_cols,to_vals=to_vals,file_content=contents)
                     st.success(f'Successfully uploaded {file.name}')
                 else:
                     st.error('No file uploaded')
@@ -120,11 +124,15 @@ class AddPlan():
         table = 'test.teacher'
         
         val_from_col = [course, self.id, title]
+        # self.sql_con.load_bytea(table,get_cols,from_col,val_from_col,dtype_from_col)
+        # st.stop()
         self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
                                          val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
         if full != None:
-            full = str(full[0][0].decode())
+            full = full[0][0].tolist()
+            # memoryview.cast
+            full = [f.decode("utf-8") for f in full[:20]]
             return full
         else: 
             return ""
@@ -140,7 +148,8 @@ class AddPlan():
             st.subheader(f"Lesson plan - {lesson}")
             with st.expander('View'):
                 text = self.get_lesson_plans(course, lesson)
-                # text = self.get_file_from_db(course,lesson)
+                if text == None:
+                    text = self.get_file_from_db(course,lesson)
                 st.write(text)
         else:
             st.subheader(f"No {course} lesson yet. Let's create one!")
@@ -149,7 +158,7 @@ class AddPlan():
             self.create_form(course)
 
         with st.expander('Upload'):
-            self.upload(course)
+            self.upload_file(course)
 
     def run(id):
         """runs page
