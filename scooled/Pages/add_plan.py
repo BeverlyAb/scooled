@@ -6,6 +6,7 @@ import streamlit as st
 import pandas as pd
 import psycopg2
 import os
+import io
 
 '''Saves file, image or text input'''
 
@@ -61,10 +62,10 @@ class AddPlan():
             if st.form_submit_button('Upload'):
                 if file != None:
                     table = 'test.teacher'
-                    to_cols = ['id', 'course','file']
+                    to_cols = ['id','lesson_title', 'course','file']
                     contents = psycopg2.Binary(file.getbuffer())
-                    to_vals = [self.id, course]
-                    self.sql_con.upload(
+                    to_vals = [self.id, file.name, course]
+                    self.sql_con.upload_bytea(
                         table=table, to_cols=to_cols,to_vals=to_vals,file_content=contents)
                     st.success(f'Successfully uploaded {file.name}')
                 else:
@@ -106,7 +107,27 @@ class AddPlan():
         self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
                                          val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
-        return full[0][0]
+        if full != None:
+            return full[0][0]
+        else: 
+            return ""
+
+    # @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
+    def get_file_from_db(self,course,title):
+        get_cols = ['file']
+        from_col = ['course', 'id', 'lesson_title']
+        dtype_from_col = ['str', 'str', 'str','bytea'] 
+        table = 'test.teacher'
+        
+        val_from_col = [course, self.id, title]
+        self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
+                                         val_from_col=val_from_col, dtype_from_col=dtype_from_col)
+        full = st.session_state[pt.submit]
+        if full != None:
+            full = str(full[0][0].decode())
+            return full
+        else: 
+            return ""
 
     def display(self):
         """displays pg
@@ -118,7 +139,9 @@ class AddPlan():
         if len(self.lessons) > 0:
             st.subheader(f"Lesson plan - {lesson}")
             with st.expander('View'):
-                st.write(self.get_lesson_plans(course, lesson))
+                text = self.get_lesson_plans(course, lesson)
+                # text = self.get_file_from_db(course,lesson)
+                st.write(text)
         else:
             st.subheader(f"No {course} lesson yet. Let's create one!")
 

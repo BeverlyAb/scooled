@@ -41,18 +41,36 @@ class SQLConnector():
         return None
  
 
-    def write(self, command : str):
-        self.connect()
-        with self.conn:
-            with self.conn.cursor() as cur:
-                try:
-                    cur.execute(command)
-                except Exception as e:
-                    st.write(e)
-                    cur.close()
-                    return e
-        self.conn.close()
-        return None
+    # def write(self, command : str):
+    #     self.connect()
+    #     with self.conn:
+    #         with self.conn.cursor() as cur:
+    #             try:
+    #                 cur.execute(command)
+    #             except Exception as e:
+    #                 st.write(e)
+    #                 cur.close()
+    #                 return e
+    #     self.conn.close()
+    #     return None
+    def update_where_specified(self,table : str, to_col : list,to_val : list, from_col : list, val_from_col : list, dtype_from_col:list):
+#         update Names
+# set name = name + ' a string to append'
+# where id = 2
+        query = f"UPDATE {table} SET {to_col} =  {to_col} + {to_val}"
+        if dtype_from_col[0] == 'int':
+            query += f" WHERE {from_col[0]} = {val_from_col[0]}"
+        else:
+            query += f" WHERE {from_col[0]} = '{val_from_col[0]}'"
+        for i in range(1,len(from_col)):
+            if dtype_from_col[i] == 'int':
+                query += f" AND {from_col[i]} = {val_from_col[i]}"
+            else:
+                query += f" AND {from_col[i]} = '{val_from_col[i]}'"
+        query += ";"
+        # st.write(query)
+        self.query(query)
+        
 
     def get_where_specified(self,table : str, get_cols : list, from_col : list, val_from_col : list, dtype_from_col:list):
         '''get certain col(s) based on certain col value'''
@@ -87,19 +105,19 @@ class SQLConnector():
         # st.write(query)
         self.query(query)
 
-    def get(self,table : str, col : list):
-        '''get everything or just one col - calling from SQL is faster than me structuring them up into DF'''
-        self.connect()
-        table = 'test.' + table     
-        self.cur = self.conn.cursor()
+    # def get(self,table : str, col : list):
+    #     '''get everything or just one col - calling from SQL is faster than me structuring them up into DF'''
+    #     self.connect()
+    #     table = 'test.' + table     
+    #     self.cur = self.conn.cursor()
         
-        self.cur.execute(f"SELECT {','.join(col)} FROM {table};")
-        out = pd.DataFrame()   
-        out = [val for val in self.cur]
+    #     self.cur.execute(f"SELECT {','.join(col)} FROM {table};")
+    #     out = pd.DataFrame()   
+    #     out = [val for val in self.cur]
         
-        self.cur.close()
-        self.conn.close()
-        return out
+    #     self.cur.close()
+    #     self.conn.close()
+    #     return out
 
 
     def insert(self, table : str, to_cols : list, to_vals : list):
@@ -117,18 +135,19 @@ class SQLConnector():
         to_vals = ["'" + val + "'" for val in to_vals]
         to_vals = ", ".join(to_vals)
         query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
-        return self.write(query)
+        return self.query(query)
 
-    def upload(self, table : str, to_cols : list, to_vals : list, file_content):
-        """inserts to values to existing row and column
+    def upload_bytea(self, table : str, to_cols : list, to_vals : list, file_content):
+        """uploads a file with the corr to_cols values
 
         Args:
             table (str): table
             to_cols (list): which columns to store into
             to_vals (list): which values to store
+            file_content (psycopg2.Binary) : file contents
 
         Returns:
-            psycopg2.connect
+            psycopg2.cursor
         """        
         to_cols = ", ".join(to_cols)
         to_vals = ["'" + val + "'" for val in to_vals]
@@ -138,9 +157,32 @@ class SQLConnector():
         query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals},{file_content}::bytea);"
         return self.query(query)
 
-    def write_file_to_db(self,table,filename):
-        query = f"COPY {table} FROM filename;"
-        self.query(query)
+    def load_bytea(self,table : str, get_cols : list, from_col : list, val_from_col : list, dtype_from_col:list):
+        """downloads a file with the corr to_cols values
+
+        Args:
+            table (str): table
+            to_cols (list): which columns to store into
+            to_vals (list): which values to store
+            file_content (psycopg2.Binary) : file contents
+
+        Returns:
+            psycopg2.cursor
+        """ 
+        # "SELECT CONVERT_FROM(DECODE(f{file}, 'BASE64'), 'UTF-8') FROM ;"
+        query = f"SELECT {','.join(get_cols)} FROM {table}"
+        if dtype_from_col[0] == 'int':
+            query += f" WHERE {from_col[0]} = {val_from_col[0]}"
+        else:
+            query += f" WHERE {from_col[0]} LIKE '{val_from_col[0]}%'"
+        for i in range(1,len(from_col)):
+            if dtype_from_col[i] != 'str':
+                query += f" OR {from_col[i]} LIKE '{val_from_col[i]}%'"
+            else:
+                query += f" OR {from_col[i]} = {val_from_col[i]}"
+        query += ";" 
+
+  
 # if __name__ == "__main__":
     # sql_con = SQLConnector()
     # get_cols = ['teacher','student']
