@@ -116,26 +116,26 @@ class AddPlan():
         else: 
             return ""
 
-    # @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
-    def get_file_from_db(self,course,title):
-        get_cols = ['file']
-        from_col = ['course', 'id', 'lesson_title']
-        dtype_from_col = ['str', 'str', 'str','bytea'] 
-        table = 'test.teacher'
+    # # @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
+    # def get_file_from_db(self,course,title):
+    #     get_cols = ['file']
+    #     from_col = ['course', 'id', 'lesson_title']
+    #     dtype_from_col = ['str', 'str', 'str','bytea'] 
+    #     table = 'test.teacher'
         
-        val_from_col = [course, self.id, title]
-        # self.sql_con.load_bytea(table,get_cols,from_col,val_from_col,dtype_from_col)
-        # st.stop()
-        self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
-                                         val_from_col=val_from_col, dtype_from_col=dtype_from_col)
-        full = st.session_state[pt.submit]
-        if full != None:
-            full = full[0][0].tolist()
-            # memoryview.cast
-            full = [f.decode("utf-8") for f in full[:20]]
-            return full
-        else: 
-            return ""
+    #     val_from_col = [course, self.id, title]
+    #     # self.sql_con.load_bytea(table,get_cols,from_col,val_from_col,dtype_from_col)
+    #     # st.stop()
+    #     self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
+    #                                      val_from_col=val_from_col, dtype_from_col=dtype_from_col)
+    #     full = st.session_state[pt.submit]
+    #     if full != None:
+    #         full = full[0][0].tolist()
+    #         # memoryview.cast
+    #         full = [f.decode("utf-8") for f in full[:20]]
+    #         return full
+    #     else: 
+    #         return ""
 
     def display(self):
         """displays pg
@@ -148,8 +148,6 @@ class AddPlan():
             st.subheader(f"Lesson plan - {lesson}")
             with st.expander('View'):
                 text = self.get_lesson_plans(course, lesson)
-                # if text == None:
-                #     text = self.get_file_from_db(course,lesson)
                 st.write(text)
         else:
             st.subheader(f"No {course} lesson yet. Let's create one!")

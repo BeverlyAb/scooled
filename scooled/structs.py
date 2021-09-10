@@ -1,7 +1,7 @@
 # structs.py
 
 from dataclasses import dataclass
-from question_bank import QuestionBank
+# from question_bank import QuestionBank
 
 @dataclass
 class PageType:

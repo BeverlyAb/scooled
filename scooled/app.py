@@ -4,9 +4,9 @@ from Pages.edit_exam import EditExam
 import streamlit as st
 from structs import PageType as pt
 # from teacher_page import Teacher
-from assignments_page import Assignments
-import pandas as pd
-from question_bank import QuestionBank
+# from assignments_page import Assignments
+# import pandas as pd
+# from question_bank import QuestionBank
 from multi_page import MultiPage
 from Pages.student_status import StudentStatus
 from Pages.add_plan import AddPlan
