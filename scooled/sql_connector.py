@@ -135,7 +135,7 @@ class SQLConnector():
             psycopg2.connect
         """
         to_cols = ", ".join(to_cols)
-        to_vals = ["'" + val + "'" for val in to_vals]
+        to_vals = ["'" + val.replace("'","`")  + "'" for val in to_vals]
         to_vals = ", ".join(to_vals)
         query = f"INSERT INTO {table} ({to_cols}) VALUES ({to_vals});"
         return self.query(query)
