@@ -46,7 +46,7 @@ class AddPlan():
         """
         with st.form('Create Form'):
             lesson = st.text_input(label="Title")
-            content = st.text_area("Write away!")
+            content = st.text_area("Summarize your lesson in 4 sentences.")
             if st.form_submit_button('Save'):
                 if lesson != "" and content != "":
                     table = 'test.teacher'
@@ -122,11 +122,15 @@ class AddPlan():
 
     def gen_quiz(self,text):
         q = QuestionGen()
-        st.write(text)
-        payload = {"input_text": text}
+        sentences = text.split('.')
+        st.write(len(sentences))
 
-        ques, ans, opt_list, note = q.generate(payload)
-        st.write(ques,'\n',ans,'\n',opt_list,note,'\n')
+        for s in sentences[:-1]:
+            payload = {"input_text": s}
+            ques, ans, opt_list, note = q.generate(payload)
+            st.write(ques,'\n',ans,'\n',opt_list,note,'\n')
+            self.sql_con.insert('')
+        st.success('Successfully saved quiz under Assignments')
 
     def display(self):
         """displays pg

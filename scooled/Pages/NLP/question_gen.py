@@ -1,13 +1,15 @@
 import nltk
 from Questgen import main
+import streamlit as st
 
 class QuestionGen:
+    
     def __init__(self):
         self.qg = main.QGen()
 
-    def download(self):
-        # use command on terminal instead 
-       nltk.download('stopwords') # python -m nltk.downloader stopwords 
+    # def download(self):
+    #     # use command on terminal instead 
+    #    nltk.download('stopwords') # python -m nltk.downloader stopwords 
 
     def generate(self,payload :dict):
         """Runs NLP model and returns dict of questions, answer, option, and context
