@@ -32,7 +32,7 @@ class StudentStatus:
         dtype_from_col = ['str']
         self.sql_con.get_where_specified(
             table, get_col, from_col, val_from_col, dtype_from_col)
-        self.courses = [val[0] for val in sorted(st.session_state[pt.submit])]
+        self.courses = [val[0] for val in sorted(set(st.session_state[pt.submit]))]
 
     @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
     def get_student_status(self, course):

@@ -39,7 +39,7 @@ class AddPlan():
         dtype_from_col = ['str']
         self.sql_con.get_where_specified(
             table, get_col, from_col, val_from_col, dtype_from_col)
-        self.courses = [val[0] for val in sorted(st.session_state[pt.submit])]
+        self.courses = [val[0] for val in sorted(set(st.session_state[pt.submit]))]
 
     def create_form(self, course):
         """allows user to type input and save as file
@@ -58,26 +58,26 @@ class AddPlan():
                 else:
                     st.error('Title and lesson cannot be empty.')
 
-    def upload_file(self, course):
-        """uploads files to db
-        """
-        with st.form('Upload Form'):
-            file = st.file_uploader(label='File', accept_multiple_files=False)
-            if st.form_submit_button('Upload'):
-                if file != None:
-                    table = 'test.teacher'
-                    to_cols = ['id','lesson_title', 'course','file']
-                    contents = file.getbuffer().tolist()#psycopg2.Binary(file.getbuffer())
-                    to_vals = [self.id, file.name, course,contents]
-                    st.write([chr(c)  for c in contents])
-                    st.write(type(contents))
-                    st.stop()
-                    self.sql_con.insert(table,to_cols,to_vals)
-                    # self.sql_con.upload_bytea(
-                        # table=table, to_cols=to_cols,to_vals=to_vals,file_content=contents)
-                    st.success(f'Successfully uploaded {file.name}')
-                else:
-                    st.error('No file uploaded')
+    # def upload_file(self, course):
+    #     """uploads files to db
+    #     """
+    #     with st.form('Upload Form'):
+    #         file = st.file_uploader(label='File', accept_multiple_files=False)
+    #         if st.form_submit_button('Upload'):
+    #             if file != None:
+    #                 table = 'test.teacher'
+    #                 to_cols = ['id','lesson_title', 'course','file']
+    #                 contents = file.getbuffer().tolist()#psycopg2.Binary(file.getbuffer())
+    #                 to_vals = [self.id, file.name, course,contents]
+    #                 st.write([chr(c)  for c in contents])
+    #                 st.write(type(contents))
+    #                 st.stop()
+    #                 self.sql_con.insert(table,to_cols,to_vals)
+    #                 # self.sql_con.upload_bytea(
+    #                     # table=table, to_cols=to_cols,to_vals=to_vals,file_content=contents)
+    #                 st.success(f'Successfully uploaded {file.name}')
+    #             else:
+    #                 st.error('No file uploaded')
 
     def update_lesson(self, course):
         """updates exam choices based on course selected
