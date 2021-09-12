@@ -1,6 +1,6 @@
 import nltk
-from pprint import pprint
 from Questgen import main
+import streamlit as st
 
 class QuestionGen:
     def __init__(self):
@@ -42,9 +42,10 @@ class QuestionGen:
         return question,answer, [opt1,opt2,opt3,opt4],note
 
 if __name__=="__main__":
+    # def run(self):
     test = QuestionGen()
     payload = {
             "input_text": "Sachin Ramesh Tendulkar is a former international cricketer from India and a former captain of the Indian national team."
     }
     ques, ans, opt_list, note = test.generate(payload)
-    print(ques,'\n',ans,'\n',opt_list,note,'\n')
+    st.write(ques,'\n',ans,'\n',opt_list,note,'\n')

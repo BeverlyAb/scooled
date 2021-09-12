@@ -7,6 +7,8 @@ import pandas as pd
 import psycopg2
 import os
 import io
+from Pages.NLP.question_gen import QuestionGen
+
 
 '''Saves file, image or text input'''
 
@@ -136,6 +138,14 @@ class AddPlan():
     #         return full
     #     else: 
     #         return ""
+    def gen_quiz(self):
+        q = QuestionGen()
+        payload = {
+            "input_text": "Sachin Ramesh Tendulkar is a former international cricketer from India and a former captain of the Indian national team."
+        }
+
+        ques, ans, opt_list, note = q.generate(payload)
+        st.write('Yo',ques,'\n',ans,'\n',opt_list,note,'\n')
 
     def display(self):
         """displays pg
@@ -154,6 +164,10 @@ class AddPlan():
 
         with st.expander('Create'):
             self.create_form(course)
+
+        with st.expander('Generate Quiz'):
+            if st.button('OK'):
+                self.gen_quiz()
 
         # with st.expander('Upload'):
         #     self.upload_file(course)
