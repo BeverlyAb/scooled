@@ -15,7 +15,7 @@ from structs import PageName as pg
 if __name__ == "__main__":
 
     name = 'Bev'
-    st.title("s'CoolEd")
+    st.image('../../img/Logo.png')
     st.sidebar.title(f"Welcome, {name}!")
     # teacher_opt = [pt.add,pt.new,pt.status,pt.edit]
     

@@ -154,7 +154,7 @@ class AddPlan():
                 if st.button('Generate Quiz'):
                     self.gen_quiz(text,course,lesson)
         else:
-            st.subheader(f"No {course} lesson yet. Let's create one!")
+            st.subheader(f"No lesson yet. Let's create one!")
 
         with st.expander('Create'):
             self.create_form(course)

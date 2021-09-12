@@ -32,12 +32,12 @@ class QuestionGen:
         Returns:
             list: 
         """       
-        question = bank['questions'][0]['question_statement'].replace("'","`") 
-        answer = bank['questions'][0]['answer'].replace("'","`")
-        opt1 = bank['questions'][0]['options'][0].replace("'","`")
-        opt2 = bank['questions'][0]['options'][1].replace("'","`")
-        opt3 = bank['questions'][0]['options'][2].replace("'","`")
-        note = bank['questions'][0]['context'].replace("'","`")
+        question = bank['questions'][0]['question_statement']
+        answer = bank['questions'][0]['answer']
+        opt1 = bank['questions'][0]['options'][0]
+        opt2 = bank['questions'][0]['options'][1]
+        opt3 = bank['questions'][0]['options'][2]
+        note = bank['questions'][0]['context']
 
         return question,answer, [opt1,opt2,opt3],note
 
