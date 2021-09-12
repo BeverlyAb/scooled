@@ -35,8 +35,8 @@ class QuestionGen:
         question = bank['questions'][0]['question_statement'] 
         answer = bank['questions'][0]['answer']
         opt1 = bank['questions'][0]['options'][0]
-        opt2 = bank['questions'][0]['options'][0]
-        opt3 = bank['questions'][0]['options'][0]
+        opt2 = bank['questions'][0]['options'][1]
+        opt3 = bank['questions'][0]['options'][2]
         note = bank['questions'][0]['context']
 
         return question,answer, [opt1,opt2,opt3],note
@@ -44,8 +44,10 @@ class QuestionGen:
 if __name__=="__main__":
     # def run(self):
     test = QuestionGen()
+    t = "Sachin Ramesh Tendulkar is a former international cricketer from India and a former captain of the Indian national team."
+    text = "Addition is the summing of parts."
     payload = {
-            "input_text": "Sachin Ramesh Tendulkar is a former international cricketer from India and a former captain of the Indian national team."
+            "input_text": text
     }
     ques, ans, opt_list, note = test.generate(payload)
     print(ques,'\n',ans,'\n',opt_list,note,'\n')

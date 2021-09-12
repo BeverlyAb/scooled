@@ -139,10 +139,11 @@ class EditExam:
             st.stop()
         with st.expander('Questions'):
             st.table(self.get_exam_details(exam,course))
-        with st.expander('Student Feedback'):
-            st.table(self.get_feedback(exam))
         with st.expander('Notes'):
             st.table(self.get_notes(exam))
+        with st.expander('Student Feedback'):
+            st.table(self.get_feedback(exam))
+
 
     def run(id):
         """runs page
