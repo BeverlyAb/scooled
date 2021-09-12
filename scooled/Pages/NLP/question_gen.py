@@ -37,10 +37,9 @@ class QuestionGen:
         opt1 = bank['questions'][0]['options'][0]
         opt2 = bank['questions'][0]['options'][0]
         opt3 = bank['questions'][0]['options'][0]
-        opt4 = answer
         note = bank['questions'][0]['context']
 
-        return question,answer, [opt1,opt2,opt3,opt4],note
+        return question,answer, [opt1,opt2,opt3],note
 
 if __name__=="__main__":
     # def run(self):
