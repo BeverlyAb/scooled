@@ -121,17 +121,19 @@ class AddPlan():
             return ""
 
     def gen_quiz(self,text,course,lesson):
-        q = QuestionGen()
+        with st.spinner("Initiating generator..."):
+            q = QuestionGen()
+        
         sentences = text.split('.')
-        st.write(len(sentences))
-
         for i,s in enumerate(sentences[:-1]):
             payload = {"input_text": s}
-            ques, ans, opt_list, note = q.generate(payload)
-            # st.write(ques,'\n',ans,'\n',opt_list,note,'\n')
-            self.upload_quiz_ques(ques,ans,opt_list,note,'test.question_bank',course,lesson,str(i))
+            with st.spinner('Running Model'):
+                ques, ans, opt_list, note = q.generate(payload)
+            with st.spinner(f'Uploading Question #{i}'):
+                self.upload_quiz_ques(ques,ans,opt_list,note,'test.question_bank',course,lesson,str(i))
         else:
             st.success('Successfully saved quiz under Assignments')
+
 
     def upload_quiz_ques(self, ques : str, ans :str, opt_list : list,note : str,table:str,course : str, lesson:str,q_num :str):
         to_cols = ['assign_name','course_name','question','question_num','answer','opt1','opt2','opt3','note']
@@ -151,8 +153,7 @@ class AddPlan():
                 text = self.get_lesson_plans(course, lesson)
                 st.write(text)
                 if st.button('Generate Quiz'):
-                    with st.spinner('Generating Quiz'):
-                        self.gen_quiz(text,course,lesson)
+                    self.gen_quiz(text,course,lesson)
         else:
             st.subheader(f"No {course} lesson yet. Let's create one!")
 

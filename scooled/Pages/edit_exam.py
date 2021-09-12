@@ -71,7 +71,7 @@ class EditExam:
         table = 'test.question_bank'
 
         val_from_col = [exam,course]
-        self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
+        self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
                                     val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
         df = pd.DataFrame(list(full), columns=[
@@ -95,7 +95,7 @@ class EditExam:
         table = 'test.student_feedback'
 
         val_from_col = [exam]
-        self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
+        self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
                                     val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
         df = pd.DataFrame(list(full), columns=["Number", "Student", "Feedback Per Question"])
@@ -118,7 +118,7 @@ class EditExam:
         table = 'test.question_bank'
 
         val_from_col = [exam]
-        self.sql_con.get_where_like(table=table, get_cols=get_cols, from_col=from_col,
+        self.sql_con.get_where_specified(table=table, get_cols=get_cols, from_col=from_col,
                                     val_from_col=val_from_col, dtype_from_col=dtype_from_col)
         full = st.session_state[pt.submit]
         df = pd.DataFrame(list(full), columns=["Number", "Note Per Question"])
