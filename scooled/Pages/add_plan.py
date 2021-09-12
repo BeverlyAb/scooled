@@ -27,6 +27,7 @@ class AddPlan():
         self.courses = []
         self.id = id
         self.lessons = []
+        self.lesson_content = ""
 
     def update_courses(self):
         """updates the course according to the teacher
@@ -53,6 +54,7 @@ class AddPlan():
                     to_vals = [str(content), self.id, course, lesson]
                     self.sql_con.insert(table, to_cols, to_vals)
                     st.success(f'Successfully created {lesson}')
+                    self.lesson_content = content
                 else:
                     st.error('Title and lesson cannot be empty.')
 
@@ -118,6 +120,49 @@ class AddPlan():
         else: 
             return ""
 
+    def gen_quiz(self,text):
+        q = QuestionGen()
+        st.write(text)
+        payload = {"input_text": text}
+
+        ques, ans, opt_list, note = q.generate(payload)
+        st.write(ques,'\n',ans,'\n',opt_list,note,'\n')
+
+    def display(self):
+        """displays pg
+        """
+        course = st.sidebar.selectbox("Courses", options=self.courses)
+        self.update_lesson(course)
+        lesson = st.sidebar.selectbox('Lessons', options=self.lessons)
+
+        if len(self.lessons) > 0:
+            st.subheader(f"Lesson plan - {lesson}")
+            with st.expander('View'):
+                text = self.get_lesson_plans(course, lesson)
+                st.write(text)
+                if st.button('Generate Quiz'):
+                    with st.spinner('Generating Quiz'):
+                        self.gen_quiz(text)
+        else:
+            st.subheader(f"No {course} lesson yet. Let's create one!")
+
+        with st.expander('Create'):
+            self.create_form(course)
+
+        # with st.expander('Upload'):
+        #     self.upload_file(course)
+
+    def run(id):
+        """runs page
+
+        Args:
+            id (str): teacher's name or email
+        """
+        plan = AddPlan(id)
+        plan.update_courses()
+        plan.display()
+
+
     # # @st.cache(hash_funcs={psycopg2.extensions.connection: id}, show_spinner=False)
     # def get_file_from_db(self,course,title):
     #     get_cols = ['file']
@@ -138,46 +183,3 @@ class AddPlan():
     #         return full
     #     else: 
     #         return ""
-    def gen_quiz(self):
-        q = QuestionGen()
-        payload = {
-            "input_text": "Sachin Ramesh Tendulkar is a former international cricketer from India and a former captain of the Indian national team."
-        }
-
-        ques, ans, opt_list, note = q.generate(payload)
-        st.write('Yo',ques,'\n',ans,'\n',opt_list,note,'\n')
-
-    def display(self):
-        """displays pg
-        """
-        course = st.sidebar.selectbox("Courses", options=self.courses)
-        self.update_lesson(course)
-        lesson = st.sidebar.selectbox('Lessons', options=self.lessons)
-
-        if len(self.lessons) > 0:
-            st.subheader(f"Lesson plan - {lesson}")
-            with st.expander('View'):
-                text = self.get_lesson_plans(course, lesson)
-                st.write(text)
-        else:
-            st.subheader(f"No {course} lesson yet. Let's create one!")
-
-        with st.expander('Create'):
-            self.create_form(course)
-
-        with st.expander('Generate Quiz'):
-            if st.button('OK'):
-                self.gen_quiz()
-
-        # with st.expander('Upload'):
-        #     self.upload_file(course)
-
-    def run(id):
-        """runs page
-
-        Args:
-            id (str): teacher's name or email
-        """
-        plan = AddPlan(id)
-        plan.update_courses()
-        plan.display()
