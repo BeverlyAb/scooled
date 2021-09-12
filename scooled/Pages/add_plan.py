@@ -123,13 +123,25 @@ class AddPlan():
     def gen_quiz(self,text,course,lesson):   
         with st.spinner('Initializing generator...Hang tight!'):
             q_gen = QuestionGen()     
+        # sentences = text.split('.')
+        # for i,s in enumerate(sentences):
+        #     payload = {"input_text": s}
+        #     with st.spinner('Running Model'):
+        #         ques, ans, opt_list, note = q_gen.generate(payload)
+        #     with st.spinner(f'Uploading Question #{i}'):
+        #         self.upload_quiz_ques(ques,ans,opt_list,note,'test.question_bank',course,lesson,str(i))
+        # else:
+        #     st.success('Successfully saved quiz under Assignments')
         sentences = text.split('.')
         for i,s in enumerate(sentences[:-1]):
             payload = {"input_text": s}
             with st.spinner('Running Model'):
                 ques, ans, opt_list, note = q_gen.generate(payload)
             with st.spinner(f'Uploading Question #{i}'):
-                self.upload_quiz_ques(ques,ans,opt_list,note,'test.question_bank',course,lesson,str(i))
+                try:
+                    self.upload_quiz_ques(ques,ans,opt_list,note,'test.question_bank',course,lesson,str(i))
+                except:
+                    pass      
         else:
             st.success('Successfully saved quiz under Assignments')
 
