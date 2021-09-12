@@ -3,7 +3,7 @@
 ## Inspiration
 App that stands for "It's Cool Education." Learning should be organic and mistakes are normal. Therefore, s'CoolEd makes creating customizable teaching and iterative learning easy.
 
-[s'CoolEd Walkthrough](https://uci.zoom.us/rec/share/lK6_W94ndTIfppk7EUBKvYWGLDDpPaS9AyFubhgQwYn9RDzCzpQFBoB-kbbeV45S.i24Nym6Tj_5WLb2W?startTime=1630269059000)
+[s'CoolEd Walkthrough](https://youtu.be/Ocooe5AjqjU)
 
 
 ## User Stories
