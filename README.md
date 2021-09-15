@@ -36,4 +36,4 @@ The following functionality is completed:
   * [ ]  Parents get notification of their child(ren)'s grades, retry attempts, and forum comments (remove anonymity and enforce parents to be involved before it's too late) 
 
 ## Entity Relationship Diagram
-<img src='img/Scooled_ERD.png' title='ERD' width='' alt='ERD' />
+<img src='scooled/img/Scooled_ERD.png' title='ERD' width='' alt='ERD' />
