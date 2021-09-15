@@ -5,6 +5,8 @@ App that stands for "It's Cool Education." Learning should be organic and mistak
 
 [s'CoolEd Walkthrough](https://youtu.be/Ocooe5AjqjU)
 
+## Question Generator
+<img src='https://j.gifs.com/VvQlXO.gif' title='ques_gen' width='' alt='ERD' />
 
 ## User Stories
 
@@ -32,4 +34,3 @@ The following functionality is completed:
 
 ## Entity Relationship Diagram
 <img src='img/Scooled_ERD.png' title='ERD' width='' alt='ERD' />
-
