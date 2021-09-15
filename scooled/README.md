@@ -5,10 +5,10 @@ App that stands for "It's Cool Education." Learning should be organic and mistak
 
 ## [s'CoolEd Walkthrough](https://youtu.be/Ocooe5AjqjU)
 
-### Question Generator
+#### Question Generator
 <img src='https://j.gifs.com/VvQlXO.gif' title='ques_gen' width='' alt='ques_gen' />
 
-### View student statuses across courses
+#### View student statuses across courses
 <img src='https://j.gifs.com/mqyGDn.gif' title='course_retry' width='' alt='course_retry' />
 
 ## User Stories
