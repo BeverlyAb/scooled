@@ -3,7 +3,7 @@
 ## Inspiration
 App that stands for "It's Cool Education." Learning should be organic and mistakes are normal. Therefore, s'CoolEd makes creating customizable teaching and iterative learning easy.
 
-[s'CoolEd Walkthrough](https://youtu.be/Ocooe5AjqjU)
+## [s'CoolEd Walkthrough](https://youtu.be/Ocooe5AjqjU)
 
 ## Question Generator
 <img src='https://j.gifs.com/VvQlXO.gif' title='ques_gen' width='' alt='ERD' />
