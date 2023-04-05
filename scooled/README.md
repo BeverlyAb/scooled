@@ -4,7 +4,7 @@
 App that stands for "It's Cool Education." Learning should be organic and mistakes are normal. Therefore, s'CoolEd makes creating customizable teaching and iterative learning easy. [Winner](https://devpost.com/software/s-cooled) of CovLab Global II: EduTech (3rd Place) and TOConnect 2021 (Best use of Cockroach DB).
 
 
-## [s'CoolEd Walkthrough](https://youtu.be/Ocooe5AjqjU)
+## [s'CoolEd Video Walkthrough](https://youtu.be/Ocooe5AjqjU)
 
 #### Question Generator
 <img src='https://j.gifs.com/VvQlXO.gif' title='ques_gen' width='' alt='ques_gen' />
