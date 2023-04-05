@@ -1,7 +1,8 @@
 # s'CoolEd
 
 ## Inspiration
-App that stands for "It's Cool Education." Learning should be organic and mistakes are normal. Therefore, s'CoolEd makes creating customizable teaching and iterative learning easy.
+App that stands for "It's Cool Education." Learning should be organic and mistakes are normal. Therefore, s'CoolEd makes creating customizable teaching and iterative learning easy. [Winner](https://devpost.com/software/s-cooled) of CovLab Global II: EduTech (3rd Place) and TOConnect 2021 (Best use of Cockroach DB).
+
 
 ## [s'CoolEd Walkthrough](https://youtu.be/Ocooe5AjqjU)
 
